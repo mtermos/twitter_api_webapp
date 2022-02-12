@@ -8,6 +8,11 @@ django = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
 mysqlclient = "*"
+tweepy = "*"
+oauth2 = "*"
+python-decouple = "*"
+install = "*"
+django-environ = "*"
 
 [dev-packages]
 
