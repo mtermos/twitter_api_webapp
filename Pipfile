@@ -13,6 +13,7 @@ oauth2 = "*"
 python-decouple = "*"
 install = "*"
 django-environ = "*"
+django-extensions = "*"
 
 [dev-packages]
 

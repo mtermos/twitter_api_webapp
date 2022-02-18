@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('screen_name', models.CharField(max_length=255)),
                 ('name', models.CharField(max_length=255)),
                 ('profile_image_url', models.CharField(max_length=255, null=True)),
-                ('twitter_oauth_token', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authorization.twitterauthtoken')),
+                ('twitter_oauth_token', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='twitter_users.twitterauthtoken')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

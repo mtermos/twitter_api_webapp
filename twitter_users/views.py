@@ -1,3 +1,6 @@
+# from distutils.command.config import config
+from time import sleep
+from urllib import response
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,6 +9,9 @@ from .decorators import twitter_login_required
 from .models import TwitterAuthToken, TwitterUser
 from .authorization import create_update_user_from_twitter, check_token_still_valid
 from twitter_api.twitter_api import TwitterAPI
+from decouple import config
+from datetime import datetime, timedelta
+
 
 
 # Create your views here.
@@ -14,7 +20,7 @@ def twitter_login(request):
     url, oauth_token, oauth_token_secret = twitter_api.twitter_login()
     if url is None or url == '':
         messages.add_message(request, messages.ERROR, 'Unable to login. Please try again.')
-        return render(request, 'authorization/error_page.html')
+        return render(request, 'twitter_users/error_page.html')
     else:
         twitter_auth_token = TwitterAuthToken.objects.filter(oauth_token=oauth_token).first()
         if twitter_auth_token is None:
@@ -29,7 +35,7 @@ def twitter_login(request):
 def twitter_callback(request):
     if 'denied' in request.GET:
         messages.add_message(request, messages.ERROR, 'Unable to login or login canceled. Please try again.')
-        return render(request, 'authorization/error_page.html')
+        return render(request, 'twitter_users/error_page.html')
     twitter_api = TwitterAPI()
     oauth_verifier = request.GET.get('oauth_verifier')
     oauth_token = request.GET.get('oauth_token')
@@ -52,22 +58,58 @@ def twitter_callback(request):
                     return redirect('index')
             else:
                 messages.add_message(request, messages.ERROR, 'Unable to get profile details. Please try again.')
-                return render(request, 'authorization/error_page.html')
+                return render(request, 'twitter_users/error_page.html')
         else:
             messages.add_message(request, messages.ERROR, 'Unable to get access token. Please try again.')
-            return render(request, 'authorization/error_page.html')
+            return render(request, 'twitter_users/error_page.html')
     else:
         messages.add_message(request, messages.ERROR, 'Unable to retrieve access token. Please try again.')
-        return render(request, 'authorization/error_page.html')
+        return render(request, 'twitter_users/error_page.html')
 
 
 @login_required
 @twitter_login_required
 def index(request):
-    return render(request, 'authorization/home.html')
+
+    context = {
+        "minutes_rt" : request.twitter_user.minutes_rt
+    }
+    
+    return render(request, 'twitter_users/home.html', context=context)
 
 
 @login_required
 def twitter_logout(request):
     logout(request)
     return redirect('index')
+
+
+@login_required
+@twitter_login_required
+def remove_retweets_create_page(request):
+    user_minutes = request.twitter_user.minutes_rt
+    if user_minutes >= 0:
+        context = {
+            'minutes_rt' : user_minutes,
+            'is_active' : True,
+        }
+    else:
+        context = {
+            'minutes_rt' : 0,
+            'is_active' : False,
+        }
+    return render(request, 'twitter_users/remove_retweets.html', context= context)
+
+
+@login_required
+@twitter_login_required
+def remove_retweets_create(request):
+    
+    if request.POST.get("active"):
+        request.twitter_user.minutes_rt = request.POST.get("minutes_num")
+    else:
+        request.twitter_user.minutes_rt = -1
+
+    request.twitter_user.save()
+    return redirect('index')
+

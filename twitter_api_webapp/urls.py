@@ -16,10 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-import first_demo
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('first_demo/', include('first_demo.urls')),
-    path('authorization/', include('authorization.urls')),
+    path('twitter_users/', include('twitter_users.urls')),
 ]

@@ -14,8 +14,10 @@ class TwitterUser(models.Model):
     screen_name = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     profile_image_url = models.CharField(max_length=255, null=True)
+    minutes_rt = models.IntegerField(default=-1)
     twitter_oauth_token = models.ForeignKey(TwitterAuthToken, on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.screen_name
+
