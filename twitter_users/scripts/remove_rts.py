@@ -19,4 +19,4 @@ while True:
         tweets = twitter_api.get_users_retweets(twitter_user.twitter_id, end_time=end_time)
 
         twitter_api.unretweet(tweet_ids=tweets, access_token=twitter_user.twitter_oauth_token.oauth_token,access_token_secret=twitter_user.twitter_oauth_token.oauth_token_secret)
-    sleep(50)
+    sleep(300)
