@@ -135,3 +135,5 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+twitter_api_webapp/__pycache__
+twitter_api_webapp/__pycache__/settings.cpython-39.pyc
