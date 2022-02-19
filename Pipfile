@@ -17,6 +17,8 @@ django-extensions = "*"
 gunicorn = "*"
 dj-database-url = "*"
 django-heroku = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
