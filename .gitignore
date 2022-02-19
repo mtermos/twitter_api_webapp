@@ -137,3 +137,4 @@ GitHub.sublime-settings
 .history
 twitter_api_webapp/__pycache__
 twitter_api_webapp/__pycache__/settings.cpython-39.pyc
+twitter_api_webapp/settings.py
