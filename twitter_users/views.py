@@ -1,81 +1,73 @@
 # from distutils.command.config import config
-from time import sleep
-from urllib import response
+
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .decorators import twitter_login_required
-from .models import TwitterAuthToken, TwitterUser
-from .authorization import create_update_user_from_twitter, check_token_still_valid
+from twitter_api.custom_models import WelcomeMessage
+
+import twitter_users
+from .decorators import twitter_login_required, twitter_dm_login_required
+from .models import TwitterAuthToken, TwitterDMAuthToken, TwitterUser
+from .authorization import create_update_user_from_twitter, create_update_user_from_twitter_dm, check_token_still_valid
 from twitter_api.twitter_api import TwitterAPI
+from twitter_api.twitter_api_dm import TwitterAPIDM
 from decouple import config
 from datetime import datetime, timedelta
 
 
 
-# Create your views here.
-def twitter_login(request):
-    twitter_api = TwitterAPI()
-    url, oauth_token, oauth_token_secret = twitter_api.twitter_login()
-    if url is None or url == '':
-        messages.add_message(request, messages.ERROR, 'Unable to login. Please try again.')
-        return render(request, 'twitter_users/error_page.html')
-    else:
-        twitter_auth_token = TwitterAuthToken.objects.filter(oauth_token=oauth_token).first()
-        if twitter_auth_token is None:
-            twitter_auth_token = TwitterAuthToken(oauth_token=oauth_token, oauth_token_secret=oauth_token_secret)
-            twitter_auth_token.save()
-        else:
-            twitter_auth_token.oauth_token_secret = oauth_token_secret
-            twitter_auth_token.save()
-        return redirect(url)
-
-
-def twitter_callback(request):
-    if 'denied' in request.GET:
-        messages.add_message(request, messages.ERROR, 'Unable to login or login canceled. Please try again.')
-        return render(request, 'twitter_users/error_page.html')
-    twitter_api = TwitterAPI()
-    oauth_verifier = request.GET.get('oauth_verifier')
-    oauth_token = request.GET.get('oauth_token')
-    twitter_auth_token = TwitterAuthToken.objects.filter(oauth_token=oauth_token).first()
-    if twitter_auth_token is not None:
-        access_token, access_token_secret = twitter_api.twitter_callback(oauth_verifier, oauth_token, twitter_auth_token.oauth_token_secret)
-        if access_token is not None and access_token_secret is not None:
-            twitter_auth_token.oauth_token = access_token
-            twitter_auth_token.oauth_token_secret = access_token_secret
-            twitter_auth_token.save()
-            # Create user
-            info = twitter_api.get_me(access_token, access_token_secret)
-            if info is not None:
-                twitter_user_new = TwitterUser(twitter_id=info[0]['id'], screen_name=info[0]['username'],
-                                               name=info[0]['name'], profile_image_url=info[0]['profile_image_url'])
-                twitter_user_new.twitter_oauth_token = twitter_auth_token
-                user, twitter_user = create_update_user_from_twitter(twitter_user_new)
-                if user is not None:
-                    login(request, user)
-                    return redirect('index')
-            else:
-                messages.add_message(request, messages.ERROR, 'Unable to get profile details. Please try again.')
-                return render(request, 'twitter_users/error_page.html')
-        else:
-            messages.add_message(request, messages.ERROR, 'Unable to get access token. Please try again.')
-            return render(request, 'twitter_users/error_page.html')
-    else:
-        messages.add_message(request, messages.ERROR, 'Unable to retrieve access token. Please try again.')
-        return render(request, 'twitter_users/error_page.html')
-
-
-@login_required
-@twitter_login_required
 def index(request):
 
-    context = {
-        "minutes_rt" : request.twitter_user.minutes_rt
-    }
+    print("index")
+    context = {}
+    if request.user.is_authenticated and hasattr(request, "twitter_user"):
+        context["minutes_rt"] = request.twitter_user.minutes_rt
+        context["wlcm_msg"] = False
     
     return render(request, 'twitter_users/home.html', context=context)
+
+def login_page(request):
+
+    print("login_page")
+    context = {}
+    if request.user.is_authenticated:
+        twitter_user = TwitterUser.objects.filter(user=request.user).first()
+        context["minutes_rt"] = twitter_user.minutes_rt
+
+        if twitter_user.twitter_oauth_token:
+            context["rm_rt_access"] = True
+
+        if twitter_user.twitter_dm_oauth_token:
+            context["dm_access"] = True
+    
+    return render(request, 'twitter_users/login.html', context=context)
+
+
+def login_post(request):
+
+    flag = True
+    if request.POST.get("remove_retweets"):
+        print("remove_retweets login: ", request.POST.get("remove_retweets"))
+        flag = flag and twitter_rm_rt_login(request)
+    
+
+    if request.POST.get("direct_messages"):
+        return twitter_dm_login(request)
+        print("direct_messages login: ", request.POST.get("direct_messages"))
+        flag = flag and twitter_dm_login(request)
+
+    if not flag:
+        print("something went wrong")
+    print("flag is true")
+
+    context = {}
+    if request.user.is_authenticated and hasattr(request, "twitter_user"):
+        context["minutes_rt"] = request.twitter_user.minutes_rt
+    
+    return render(request, 'twitter_users/home.html', context=context)
+
+
 
 
 @login_required
@@ -112,4 +104,238 @@ def remove_retweets_create(request):
 
     request.twitter_user.save()
     return redirect('index')
+
+
+
+@login_required
+@twitter_dm_login_required
+def welcome_message_create_page(request):
+
+    api = TwitterAPIDM()
+    welcome_message = api.get_welcome_messages_list(
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+    )
+
+    wlc_rules = api.get_rules_list(
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+    )
+
+    if wlc_rules and len(wlc_rules) > 0 and wlc_rules[0] is not None:
+        rule = wlc_rules[0]
+        default_id = rule.welcome_message_id
+    else:
+        default_id = -1
+    # welcome_message = []
+    # welcome_message.append(api.get_welcome_message(
+    #     access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+    #     access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+    #     id = '1495330066301132806'
+    # ))
+
+    if welcome_message is not None:
+        context = {
+            'welcome_messages' : welcome_message,
+            'default_id' : default_id,
+            'is_set' : True
+        }
+    else:
+        context = {
+            'is_set' : False
+        }
+
+    return render(request, 'twitter_users/welcome_message.html', context= context)
+
+
+@login_required
+@twitter_dm_login_required
+def welcome_message_create(request):
+    
+    api = TwitterAPIDM()
+    created_message = api.add_welcome_message(
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+        text = request.POST.get("text"),
+        name = request.POST.get("name"),
+    )
+    return redirect('welcome_message_create_page')
+
+@login_required
+@twitter_dm_login_required
+def welcome_message_delete(request, id):
+    api = TwitterAPIDM()
+    is_deleted = api.delete_welcome_message(
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+        id = id
+    )
+
+    if is_deleted:
+        print("deleted: ",id)
+    return redirect('welcome_message_create_page')
+
+@login_required
+@twitter_dm_login_required
+def make_welcome_message_default(request):
+    api = TwitterAPIDM()
+    rule = api.add_rule(
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+        welcome_message_id = request.POST.get("id")
+    )
+
+    return redirect('welcome_message_create_page')
+
+@login_required
+@twitter_dm_login_required
+def welcome_message_edit(request, id):
+
+    if not id:
+        return redirect("welcome_message_create_page")
+
+    api = TwitterAPIDM()
+    message = api.get_welcome_message(
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+        id = id
+    )
+
+    if message:
+        context = {
+            'message' : message,
+        }
+    else:
+        return redirect("welcome_message_create_page")
+
+    return render(request, 'twitter_users/welcome_message_edit.html', context= context)
+
+
+
+@login_required
+@twitter_dm_login_required
+def welcome_message_update(request):
+
+    api = TwitterAPIDM()
+    update_message = api.update_welcome_message(
+        access_token =request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret = request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+        id = request.POST.get("id"),
+        text = request.POST.get("text"),
+        name = request.POST.get("name"),
+    )
+    return redirect('welcome_message_create_page')
+
+
+
+
+
+
+# Create your views here.
+def twitter_rm_rt_login(request):
+    twitter_api = TwitterAPI()
+    url, oauth_token, oauth_token_secret = twitter_api.twitter_login()
+    if url is None or url == '':
+        messages.add_message(request, messages.ERROR, 'Unable to login. Please try again.')
+        return render(request, 'twitter_users/error_page.html')
+    else:
+        twitter_auth_token = TwitterAuthToken.objects.filter(oauth_token=oauth_token).first()
+        if twitter_auth_token is None:
+            twitter_auth_token = TwitterAuthToken(oauth_token=oauth_token, oauth_token_secret=oauth_token_secret)
+            twitter_auth_token.save()
+        else:
+            twitter_auth_token.oauth_token_secret = oauth_token_secret
+            twitter_auth_token.save()
+        print(url)
+        return redirect(url)
+
+
+def twitter_rm_rt_callback(request):
+    if 'denied' in request.GET:
+        messages.add_message(request, messages.ERROR, 'Unable to login or login canceled. Please try again.')
+        return render(request, 'twitter_users/error_page.html')
+    twitter_api = TwitterAPI()
+    oauth_verifier = request.GET.get('oauth_verifier')
+    oauth_token = request.GET.get('oauth_token')
+    twitter_auth_token = TwitterAuthToken.objects.filter(oauth_token=oauth_token).first()
+    if twitter_auth_token is not None:
+        access_token, access_token_secret = twitter_api.twitter_callback(oauth_verifier, oauth_token, twitter_auth_token.oauth_token_secret)
+        if access_token is not None and access_token_secret is not None:
+            twitter_auth_token.oauth_token = access_token
+            twitter_auth_token.oauth_token_secret = access_token_secret
+            twitter_auth_token.save()
+            # Create user
+            info = twitter_api.get_me(access_token, access_token_secret)
+            if info is not None:
+                twitter_user_new = TwitterUser(twitter_id=info[0]['id'], screen_name=info[0]['username'],
+                                               name=info[0]['name'], profile_image_url=info[0]['profile_image_url'])
+                twitter_user_new.twitter_oauth_token = twitter_auth_token
+                user, twitter_user = create_update_user_from_twitter(twitter_user_new)
+                if user is not None:
+                    login(request, user)
+                    return redirect("index")
+            else:
+                messages.add_message(request, messages.ERROR, 'Unable to get profile details. Please try again.')
+                return render(request, 'twitter_users/error_page.html')
+        else:
+            messages.add_message(request, messages.ERROR, 'Unable to get access token. Please try again.')
+            return render(request, 'twitter_users/error_page.html')
+    else:
+        messages.add_message(request, messages.ERROR, 'Unable to retrieve access token. Please try again.')
+        return render(request, 'twitter_users/error_page.html')
+
+
+
+def twitter_dm_login(request):
+    twitter_api = TwitterAPIDM()
+    url, oauth_token, oauth_token_secret = twitter_api.twitter_login()
+    if url is None or url == '':
+        messages.add_message(request, messages.ERROR, 'Unable to login. Please try again.')
+        return render(request, 'twitter_users/error_page.html')
+    else:
+        twitter_auth_token = TwitterDMAuthToken.objects.filter(oauth_token=oauth_token).first()
+        if twitter_auth_token is None:
+            twitter_auth_token = TwitterDMAuthToken(oauth_token=oauth_token, oauth_token_secret=oauth_token_secret)
+            twitter_auth_token.save()
+        else:
+            twitter_auth_token.oauth_token_secret = oauth_token_secret
+            twitter_auth_token.save()
+        return redirect(url)
+
+
+def twitter_dm_callback(request):
+    if 'denied' in request.GET:
+        messages.add_message(request, messages.ERROR, 'Unable to login or login canceled. Please try again.')
+        return render(request, 'twitter_users/error_page.html')
+    twitter_api = TwitterAPIDM()
+    oauth_verifier = request.GET.get('oauth_verifier')
+    oauth_token = request.GET.get('oauth_token')
+    twitter_auth_token = TwitterDMAuthToken.objects.filter(oauth_token=oauth_token).first()
+    if twitter_auth_token is not None:
+        access_token, access_token_secret = twitter_api.twitter_callback(oauth_verifier, oauth_token, twitter_auth_token.oauth_token_secret)
+        if access_token is not None and access_token_secret is not None:
+            twitter_auth_token.oauth_token = access_token
+            twitter_auth_token.oauth_token_secret = access_token_secret
+            twitter_auth_token.save()
+            # Create user
+            info = twitter_api.get_me(access_token, access_token_secret)
+            if info is not None:
+                twitter_user_new = TwitterUser(twitter_id=info[0]['id'], screen_name=info[0]['username'],
+                                               name=info[0]['name'], profile_image_url=info[0]['profile_image_url'])
+                twitter_user_new.twitter_dm_oauth_token = twitter_auth_token
+                user, twitter_user = create_update_user_from_twitter_dm(twitter_user_new)
+                if user is not None:
+                    login(request, user)
+                    return redirect("index")
+            else:
+                messages.add_message(request, messages.ERROR, 'Unable to get profile details. Please try again.')
+                return render(request, 'twitter_users/error_page.html')
+        else:
+            messages.add_message(request, messages.ERROR, 'Unable to get access token. Please try again.')
+            return render(request, 'twitter_users/error_page.html')
+    else:
+        messages.add_message(request, messages.ERROR, 'Unable to retrieve access token. Please try again.')
+        return render(request, 'twitter_users/error_page.html')
+
+
 

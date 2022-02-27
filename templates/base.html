@@ -18,9 +18,8 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'remove_retweets_create_page' %}">ازالة اعادة التغريد</a>
-          <a class="dropdown-item" href="#">في طور الاعداد</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">في طور الاعداد</a>
+          <a class="dropdown-item" href="{% url 'welcome_message_create_page' %}">رسالة الترحيب</a>
+          {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
         </div>
 
         <ul class="navbar-nav ml-auto">
@@ -39,12 +38,14 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' %}">تسجيل دخول</a>
+                <a class="nav-link" href="{% url 'login_page' %}">تسجيل دخول</a>
               </li>
 
+              {% comment %} 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'signup' %}">حساب جديد</a>
+                <a class="nav-link" href="{% url 'login_page' %}">حساب جديد</a>
               </li>
+              {% endcomment %}
             {% endif %}
         </ul>
       </nav>

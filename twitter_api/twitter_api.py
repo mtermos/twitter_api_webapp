@@ -4,14 +4,14 @@ from decouple import config
 
 class TwitterAPI:
     def __init__(self):
-        self.api_key = config('TWITTER_API_KEY')
-        self.api_secret = config('TWITTER_API_SECRET')
-        self.client_id = config('TWITTER_CLIENT_ID')
-        self.client_secret = config('TWITTER_CLIENT_SECRET')
-        self.access_token = config('TWITTER_ACCESS_TOKEN')
-        self.access_secret = config('TWITTER_ACCESS_SECRET')
-        self.oauth_callback_url = config('TWITTER_OAUTH_CALLBACK_URL')
-        self.bearer_token = config('TWITTER_BEARER_TOKEN')
+        self.api_key = config('RM_RT_TWITTER_API_KEY')
+        self.api_secret = config('RM_RT_TWITTER_API_SECRET')
+        self.client_id = config('RM_RT_TWITTER_CLIENT_ID')
+        self.client_secret = config('RM_RT_TWITTER_CLIENT_SECRET')
+        self.access_token = config('RM_RT_TWITTER_ACCESS_TOKEN')
+        self.access_secret = config('RM_RT_TWITTER_ACCESS_SECRET')
+        self.oauth_callback_url = config('RM_RT_TWITTER_OAUTH_CALLBACK_URL')
+        self.bearer_token = config('RM_RT_TWITTER_BEARER_TOKEN')
 
     def twitter_login(self):
         oauth1_user_handler = tweepy.OAuth1UserHandler(self.api_key, self.api_secret, callback=self.oauth_callback_url)
@@ -58,6 +58,7 @@ class TwitterAPI:
             )
 
             tweets = []
+
             for page in user_tweets:
                 if page.data:
                     for tweet in page.data:

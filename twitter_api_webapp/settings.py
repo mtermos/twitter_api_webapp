@@ -80,23 +80,23 @@ WSGI_APPLICATION = 'twitter_api_webapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': config('DATABASE_NAME'),
-#         'USER': config('DATABASE_USER'),
-#         'PASSWORD': config('DATABASE_PASS'),
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASS'),
+    }
 }
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=config('DATABASE_URL')
+#     )
+# }
+
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -150,5 +150,5 @@ LOGIN_URL = '/twitter_users/twitter_login/'
 
 
 
-import django_heroku
-django_heroku.settings(locals())
+# import django_heroku
+# django_heroku.settings(locals())

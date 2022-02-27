@@ -4,7 +4,10 @@
 
   <div class="container mx-auto mt-5" style="width: 75%;">
       
-    <h1>أهلا وسهلا</h1>
+    <h1 class="text-center">أهلا وسهلا</h1>
+
+    {% if user.is_authenticated %}
+      {% comment %} {% if %}{% else %}{% endif %} {% endcomment %}
     <p>
         <p>رقم المستخدم: {{ user.id }}</p>
         <p>آخر تسجيل دخول: {{ user.last_login }}</p>
@@ -17,6 +20,7 @@
         {% endif %}
         <a href="{% url 'twitter_logout' %}">Logout</a>
     </p>
+    {% endif %}
 
     <ul>
       {% for tweet in tweets %}
