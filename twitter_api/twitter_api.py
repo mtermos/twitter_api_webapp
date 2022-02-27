@@ -132,3 +132,51 @@ class TwitterAPI:
         except Exception as e:
             print(e)
             return None
+
+
+
+    def get_users_tweets(self, twitter_id, end_time, start_time = None):
+        try:
+            client = tweepy.Client(
+                bearer_token = self.bearer_token,
+                consumer_key = self.api_key,
+                consumer_secret = self.api_secret,
+            )
+
+            user_tweets = tweepy.Paginator(client.get_users_tweets,
+                id = twitter_id,
+                end_time = end_time,
+                start_time = start_time,
+                exclude = ["retweets"]
+            )
+
+            tweets = []
+
+            for page in user_tweets:
+                if page.data:
+                    for tweet in page.data:
+                        tweets.append(tweet.id)
+            return tweets
+
+        except Exception as e:
+            print(e)
+            return None
+
+    def retweet(self,tweet_ids ,access_token,access_token_secret):
+        try:
+            auth = tweepy.OAuth1UserHandler(
+                consumer_key=self.api_key,
+                consumer_secret=self.api_secret,
+                access_token=access_token,
+                access_token_secret=access_token_secret
+            )
+
+            api = tweepy.API(auth)
+
+            for id in tweet_ids:
+                api.retweet(id)
+
+        except Exception as e:
+            print(e)
+            return None
+

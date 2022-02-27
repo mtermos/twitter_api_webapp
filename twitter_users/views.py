@@ -19,12 +19,15 @@ from datetime import datetime, timedelta
 
 def index(request):
 
-    print("index")
     context = {}
     if request.user.is_authenticated and hasattr(request, "twitter_user"):
         context["minutes_rt"] = request.twitter_user.minutes_rt
         context["wlcm_msg"] = False
     
+    if request.user_agent.is_mobile:
+        print("index")
+        return render(request, 'twitter_users/mobile/home.html', context= context)
+
     return render(request, 'twitter_users/home.html', context=context)
 
 def login_page(request):
@@ -226,6 +229,41 @@ def welcome_message_update(request):
     )
     return redirect('welcome_message_create_page')
 
+
+
+@login_required
+@twitter_login_required
+def auto_retweet_create(request):
+
+    hours_auto_rt = request.twitter_user.hours_auto_rt
+    if hours_auto_rt >= 0:
+        context = {
+            'hours_auto_rt' : hours_auto_rt,
+            'is_active' : True,
+        }
+    else:
+        context = {
+            'hours_auto_rt' : 0,
+            'is_active' : False,
+        }
+    
+    if request.user_agent.is_mobile:
+        return render(request, 'twitter_users/mobile/auto_retweet.html', context= context)
+
+    return render(request, 'twitter_users/auto_retweet.html', context= context)
+
+
+@login_required
+@twitter_login_required
+def auto_retweet_store(request):
+    
+    if request.POST.get("active"):
+        request.twitter_user.hours_auto_rt = request.POST.get("hours_auto_rt")
+    else:
+        request.twitter_user.hours_auto_rt = -1
+
+    request.twitter_user.save()
+    return redirect('index')
 
 
 

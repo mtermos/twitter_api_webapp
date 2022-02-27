@@ -23,6 +23,10 @@ class TwitterUser(models.Model):
     profile_image_url = models.CharField(max_length=255, null=True)
     minutes_rt = models.IntegerField(default=-1)
     last_rm_rt_check = models.DateTimeField(null = True)
+
+    hours_auto_rt = models.IntegerField(default=-1)
+    last_auto_rt_check = models.DateTimeField(null = True)
+
     twitter_oauth_token = models.ForeignKey(TwitterAuthToken, on_delete=models.CASCADE, null=True)
     twitter_dm_oauth_token = models.ForeignKey(TwitterDMAuthToken, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)

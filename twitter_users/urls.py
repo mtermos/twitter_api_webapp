@@ -21,4 +21,7 @@ urlpatterns = [
     path('welcome_message/make_default', views.make_welcome_message_default, name='make_welcome_message_default'),
     path('welcome_message/edit/<str:id>', views.welcome_message_edit, name='welcome_message_edit'),
     path('welcome_message/update', views.welcome_message_update, name='welcome_message_update'),
+
+    path('auto_retweet/create', views.auto_retweet_create, name='auto_retweet_create'),
+    path('auto_retweet/store', views.auto_retweet_store, name='auto_retweet_store'),
 ]

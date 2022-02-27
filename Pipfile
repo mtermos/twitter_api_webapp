@@ -19,6 +19,11 @@ dj-database-url = "*"
 django-heroku = "*"
 psycopg2 = "*"
 psycopg2-binary = "*"
+pyyaml = "*"
+ua-parser = "*"
+user-agents = "*"
+django-user-agents = "*"
+python-memcached = "*"
 
 [dev-packages]
 
