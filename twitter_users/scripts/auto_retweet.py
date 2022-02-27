@@ -27,5 +27,5 @@ def run():
         if len(tweets) > 0:
             twitter_api.retweet(tweet_ids=tweets, access_token=twitter_user.twitter_oauth_token.oauth_token,access_token_secret=twitter_user.twitter_oauth_token.oauth_token_secret)
         
-        twitter_user.last_auto_rt_check = datetime.now(tz=timezone.utc)
+        twitter_user.last_auto_rt_check = datetime.now(tz=timezone.utc) - timedelta(hours= int(twitter_user.hours_auto_rt))
         twitter_user.save()
