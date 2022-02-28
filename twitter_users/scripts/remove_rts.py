@@ -16,7 +16,7 @@ def run():
             last_check = datetime.strptime(datetime.strftime(twitter_user.last_rm_rt_check, "%d-%m-%Y %H:%M:%S"), "%d-%m-%Y %H:%M:%S")
             start_time = last_check.isoformat('T')+ "Z"
 
-        end_time = (datetime.now() - timedelta(minutes= int(twitter_user.minutes_rt))).replace(microsecond=0).isoformat('T')+ "Z"
+        end_time = (datetime.now(tz=timezone.utc) - timedelta(minutes= int(twitter_user.minutes_rt))).replace(microsecond=0).isoformat('T')+ "Z"
 
         if start_time and start_time >= end_time:
             continue
