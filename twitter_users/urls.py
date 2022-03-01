@@ -5,7 +5,6 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     path('login_page/', views.login_page, name="login_page"),
-    path('login_post/', views.login_post, name="login_post"),
     path('twitter_login/', views.twitter_rm_rt_login, name='twitter_rm_rt_login'),
     path('twitter_login_dm/', views.twitter_dm_login, name='twitter_dm_login'),
     path('twitter_rm_rt/twitter_callback/', views.twitter_rm_rt_callback, name='twitter_rm_rt_callback'),

@@ -103,7 +103,6 @@ class TwitterAPI:
             # )
 
 
-            # print("========")
             # client.unretweet(1493940398036770820, user_auth= True)
             # client.unretweet(1493938292080926727)
 
@@ -124,9 +123,6 @@ class TwitterAPI:
             )
             api = tweepy.API(auth)
             timeline = api.user_timeline(user_id = twitter_id, include_rts = True)
-            # for message in api.user_timeline(user_id = twitter_id, include_rts = True):
-            #     print("========>>>>>>", message)
-            print("========>>>>>>", timeline)
 
             return timeline
         except Exception as e:

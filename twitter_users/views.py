@@ -25,14 +25,12 @@ def index(request):
         context["wlcm_msg"] = False
     
     if request.user_agent.is_mobile:
-        print("index")
         return render(request, 'twitter_users/mobile/home.html', context= context)
 
     return render(request, 'twitter_users/home.html', context=context)
 
 def login_page(request):
 
-    print("login_page")
     context = {}
     if request.user.is_authenticated:
         twitter_user = TwitterUser.objects.filter(user=request.user).first()
@@ -45,30 +43,6 @@ def login_page(request):
             context["dm_access"] = True
     
     return render(request, 'twitter_users/login.html', context=context)
-
-
-def login_post(request):
-
-    flag = True
-    if request.POST.get("remove_retweets"):
-        print("remove_retweets login: ", request.POST.get("remove_retweets"))
-        flag = flag and twitter_rm_rt_login(request)
-    
-
-    if request.POST.get("direct_messages"):
-        return twitter_dm_login(request)
-        print("direct_messages login: ", request.POST.get("direct_messages"))
-        flag = flag and twitter_dm_login(request)
-
-    if not flag:
-        print("something went wrong")
-    print("flag is true")
-
-    context = {}
-    if request.user.is_authenticated and hasattr(request, "twitter_user"):
-        context["minutes_rt"] = request.twitter_user.minutes_rt
-    
-    return render(request, 'twitter_users/home.html', context=context)
 
 
 
@@ -175,8 +149,6 @@ def welcome_message_delete(request, id):
         id = id
     )
 
-    if is_deleted:
-        print("deleted: ",id)
     return redirect('welcome_message_create_page')
 
 @login_required
@@ -205,6 +177,10 @@ def welcome_message_edit(request, id):
         id = id
     )
 
+    text = message.message_data["text"]
+    if "رسالة الترحيب بواسطة" in text.splitlines()[-1]:
+        message.message_data["text"] = text[:text.rfind('\n')]
+
     if message:
         context = {
             'message' : message,
@@ -219,13 +195,15 @@ def welcome_message_edit(request, id):
 @login_required
 @twitter_dm_login_required
 def welcome_message_update(request):
+    
+    text = request.POST.get("text") + "\n" + "رسالة الترحيب بواسطة: adawat.tech"
 
     api = TwitterAPIDM()
     update_message = api.update_welcome_message(
         access_token =request.twitter_user.twitter_dm_oauth_token.oauth_token,
         access_token_secret = request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
         id = request.POST.get("id"),
-        text = request.POST.get("text"),
+        text = text,
         name = request.POST.get("name"),
     )
     return redirect('welcome_message_create_page')
@@ -285,7 +263,6 @@ def twitter_rm_rt_login(request):
         else:
             twitter_auth_token.oauth_token_secret = oauth_token_secret
             twitter_auth_token.save()
-        print(url)
         return redirect(url)
 
 

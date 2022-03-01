@@ -136,7 +136,6 @@ class TwitterAPIDM:
                 payload_type="welcome_message",
                 parser=welcome_parser
             )
-            print("======>>>>>>> get_welcome_message: ", type(response))
             return response
 
 
