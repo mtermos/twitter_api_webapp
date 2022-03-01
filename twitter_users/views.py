@@ -155,11 +155,12 @@ def welcome_message_create_page(request):
 @twitter_dm_login_required
 def welcome_message_create(request):
     
+    text = request.POST.get("text") + "\n" + "رسالة الترحيب بواسطة: adawat.tech"
     api = TwitterAPIDM()
     created_message = api.add_welcome_message(
         access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
         access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
-        text = request.POST.get("text"),
+        text = text,
         name = request.POST.get("name"),
     )
     return redirect('welcome_message_create_page')
