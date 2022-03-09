@@ -24,6 +24,9 @@ ua-parser = "*"
 user-agents = "*"
 django-user-agents = "*"
 python-memcached = "*"
+django-allauth = "*"
+django-embed-video = "*"
+django-crispy-forms = "*"
 
 [dev-packages]
 

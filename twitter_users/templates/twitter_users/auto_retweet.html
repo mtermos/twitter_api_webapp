@@ -1,49 +1,116 @@
-{% extends "base.html" %}
-
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Remove Retweets
+{% endblock title %}
+{% block extra_css %}
+    <!-- jsvectormap css -->
+    <link href="{% static 'libs/jsvectormap/dist/css/jsvectormap.min.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+    <!--Swiper slider css-->
+    <link href="{% static 'libs/swiper/swiper-bundle.min.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+{% endblock extra_css %}
 {% block content %}
-
-  <div class="container mx-auto mt-5 text-center" style="width: 75%;">
-    
-    <form action="{% url 'auto_retweet_store' %}" method="post">
-      {% csrf_token %}
-      <div class="form-group">
-        
-        <div class="form-check mb-5">
-          <input type="checkbox" class="form-check-input" id="active" name="active" onclick="update_active();"
-            {% if is_active %}
-              checked
-            {% endif %}
-          >
-          <label class="form-check-label" for="active">تشغيل هذه الخاصية</label>
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Auto Retweet" title="Auto Retweet" %}
+                    {% comment %} <span data-key="t-home-page">الصفحة الرئيسية</span> {% endcomment %}
+                {% endblock pagetitle %}
+            </div>
+            <!-- container-fluid -->
+            <div class="row mx-auto mt-5">
+                <div class="col-xxl-6">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex">
+                            <h4 class="card-title mb-0 flex-grow-1">Auto Retweet</h4>
+                        </div>
+                        <!-- end card header -->
+                        <div class="card-body">
+                            <p class="text-muted">
+                                Every 10 minutes, the script accesses your last tweets and retweets the ones tweeted before the specified time you've given.</br> 
+                                If your account is restricted/blocked, Twitter blocks this Auto Retweeter too, to get it working again quickly, reconnect it from this website when that happens.
+                            </p>
+                            <div class="live-preview">
+                                <form action="{% url 'auto_retweet_store' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch form-switch-lg mb-3">
+                                                <input type="checkbox"
+                                                       class="form-check-input"
+                                                       id="active"
+                                                       name="active"
+                                                       onclick="update_active();"
+                                                       {% if is_active %} checked{% endif %}/>
+                                                <label class="form-check-label" for="active">تشغيل هذه الخاصية</label>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-md-6"></div>
+                                        <!--end col-->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="hours_auto_rt" class="form-label">عدل عدد الساعات:</label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       placeholder="Enter company name"
+                                                       id="hours_auto_rt"
+                                                       name="hours_auto_rt"
+                                                       value="{{ hours_auto_rt }}"
+                                                       placeholder="الساعات"
+                                                       {% if not is_active %} disabled{% endif %}/>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-md-6"></div>
+                                        <!--end col-->
+                                        <div class="col-lg-12">
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end col -->
+            </div>
         </div>
-      </div>
-
-      <div class="form-group center-block">
-        <label for="hours_auto_rt">عدل عدد الساعات:</label>
-        <input type="number" class="form-control" style="width: 200px; margin: 0 auto"
-          id="hours_auto_rt" name="hours_auto_rt" placeholder="الساعات" value="{{ hours_auto_rt }}"
-          {% if not is_active %}
-            disabled
-          {% endif %}
-        >
-        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-      </div>
-      <div class="">
-        <button type="submit" class="btn btn-primary">ادخال</button>
-      </div>
-    </form>
-  </div>
-
-
-  <script>
-    function update_active()
-    {
-      if (document.getElementById('active').checked) 
-      {
-          document.getElementById('hours_auto_rt').disabled = false;
-      } else {
-          document.getElementById('hours_auto_rt').disabled = true;
-      }
-    }
-  </script>
+        <!-- End Page-content -->
+    </div>
+    <!-- end main content-->
 {% endblock content %}
+{% block extra_js %}
+    <script>
+  function update_active()
+  {
+    if (document.getElementById('active').checked) 
+    {
+        document.getElementById('hours_auto_rt').disabled = false;
+    } else {
+        document.getElementById('hours_auto_rt').disabled = true;
+    }
+  }
+    </script>
+    <!-- apexcharts -->
+    <script src="{% static 'libs/apexcharts/dist/apexcharts.min.js'%}"></script>
+    <!-- Vector map-->
+    <script src="{% static 'libs/jsvectormap/dist/js/jsvectormap.min.js'%}"></script>
+    <script src="{% static 'libs/jsvectormap/dist/maps/world-merc.js'%}"></script>
+    <!--Swiper slider js-->
+    <script src="{% static 'libs/swiper/swiper-bundle.min.js'%}"></script>
+    <!-- Dashboard init -->
+    <script src="{% static 'js/pages/dashboard-ecommerce.init.js'%}"></script>
+{% endblock extra_js %}

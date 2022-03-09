@@ -20,14 +20,35 @@ from datetime import datetime, timedelta
 def index(request):
 
     context = {}
-    if request.user.is_authenticated and hasattr(request, "twitter_user"):
-        context["minutes_rt"] = request.twitter_user.minutes_rt
-        context["wlcm_msg"] = False
     
-    if request.user_agent.is_mobile:
-        return render(request, 'twitter_users/mobile/home.html', context= context)
+    if request.user.is_authenticated:
+        twitter_user = TwitterUser.objects.filter(user=request.user).first()
+        context["minutes_rt"] = twitter_user.minutes_rt
 
-    return render(request, 'twitter_users/home.html', context=context)
+        if twitter_user.twitter_oauth_token:
+            context["rm_rt_access"] = True
+
+            context["minutes_rm_rt"] = twitter_user.minutes_rt
+            context["removed_rts_count"] = twitter_user.removed_rts_count
+
+            context["hours_auto_rt"] = twitter_user.hours_auto_rt
+            context["auto_rts_count"] = twitter_user.auto_rts_count
+
+        if twitter_user.twitter_dm_oauth_token:
+            context["dm_access"] = True
+
+    return render(request, 'twitter_users/index.html', context=context)
+
+
+@twitter_login_required
+def dashboards(request):
+
+    context = {}
+    if request.user.is_authenticated and hasattr(request, "twitter_user"):
+        context["twitter_user"] = request.twitter_user
+
+    return render(request, 'twitter_users/dashboards.html', context=context)
+
 
 def login_page(request):
 
@@ -104,16 +125,20 @@ def welcome_message_create_page(request):
         default_id = rule.welcome_message_id
     else:
         default_id = -1
-    # welcome_message = []
-    # welcome_message.append(api.get_welcome_message(
-    #     access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
-    #     access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
-    #     id = '1495330066301132806'
-    # ))
+
+    messages_json = []
+
+    if welcome_message:
+        for message in welcome_message:
+            text = message.message_data["text"]
+            if "رسالة الترحيب بواسطة" in text.splitlines()[-1]:
+                text = text[:text.rfind('\n')]
+
+            messages_json.append({"id":message.id, "name" : message.name, "text":text})
 
     if welcome_message is not None:
         context = {
-            'welcome_messages' : welcome_message,
+            'messages_json' : messages_json,
             'default_id' : default_id,
             'is_set' : True
         }
@@ -195,7 +220,6 @@ def welcome_message_edit(request, id):
 @login_required
 @twitter_dm_login_required
 def welcome_message_update(request):
-    
     text = request.POST.get("text") + "\n" + "رسالة الترحيب بواسطة: adawat.tech"
 
     api = TwitterAPIDM()

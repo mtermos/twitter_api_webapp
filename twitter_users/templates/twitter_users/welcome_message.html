@@ -1,86 +1,344 @@
-{% extends "base.html" %}
-
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Welcome Message
+{% endblock title %}
 {% block content %}
-
-  <div class="container mx-auto mt-5 text-center" style="width: 75%;">
-    
-    {% if is_set %}
-      <h3>You already have a welcome message!</h3>
-
-
-      <table class="table table-responsive">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">text</th>
-            <th scope="col">make default</th>
-            <th scope="col">modify</th>
-            <th scope="col">delete</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          {% for message in welcome_messages %}
-            <tr>
-              <th scope="row">{{forloop.counter}}</th>
-              <td>{{ message.name }}</td>
-              <td>{{ message.message_data.text|slice:":20" }}</td>
-
-              {% if default_id == message.id %}
-                <td><a href="" class="btn btn-success">already default</a></td>
-              {% else %}
-                <td>   
-                  <form action="{% url 'make_welcome_message_default' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{message.id}}" name="id">
-                    <input type="submit" class="btn btn-success" value="make default">
-                  </form>
-                </td>
-              {% endif %}
-
-              <td>
-                <a href="{% url 'welcome_message_edit' id=message.id %}" class="btn btn-info">modify</a>
-              </td>
-              <td><a href="{% url 'welcome_message_delete' id=message.id %}" class="btn btn-danger">delete</a></td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      
-    {% else %}
-      <h3> You have no welcome message, want to have a new one? </h3>
-    {% endif %}
-
-
-    <h3 class="mt-5"> Add a new Welcome message</h3>
-
-    <form action="{% url 'welcome_message_create' %}" method="post">
-      {% csrf_token %}
-
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" placeholder="name" name="name">
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-
-      <div class="form-group text-center">
-        <label for="minutes_num p3">enter the text</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">text</span>
-          </div>
-          <textarea class="form-control" aria-label="With textarea" name="text"></textarea>
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Tools" title="Welcome Message" %}
+                {% endblock pagetitle %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title mb-0">Add, Edit & Remove Welcome Messages</h4>
+                            </div>
+                            <!-- end card header -->
+                            <div class="card-body">
+                                <div id="customerList">
+                                    <div class="row g-4 mb-3">
+                                        <div class="col-sm-auto">
+                                            <div>
+                                                <button type="button"
+                                                        class="btn btn-success add-btn"
+                                                        data-bs-toggle="modal"
+                                                        id="create-btn"
+                                                        data-bs-target="#createModal">
+                                                    <i class="ri-add-line align-bottom me-1"></i> Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div class="d-flex justify-content-sm-end">
+                                                <div class="search-box ms-2">
+                                                    <input type="text" class="form-control search" placeholder="Search..."/>
+                                                    <i class="ri-search-line search-icon"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive table-card mt-3 mb-1">
+                                        <table class="table align-middle table-nowrap" id="customerTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    {% comment %} <th scope="col" style="width: 50px;">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="checkAll" value="option">
+                                                        </div>
+                                                    </th> {% endcomment %}
+                                                    <th class="sort" data-sort="name">Name</th>
+                                                    <th class="sort" data-sort="text">Text</th>
+                                                    <th class="sort" data-sort="activate">Activate</th>
+                                                    <th class="sort" data-sort="action">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="list form-check-all">
+                                                {% for message in messages_json %}
+                                                    <tr>
+                                                        {% comment %} <th scope="row">
+                                                          <div class="form-check">
+                                                              <input class="form-check-input" type="checkbox" name="checkAll" value="option1">
+                                                          </div>
+                                                        </th> {% endcomment %}
+                                                        {% comment %} <td class="id" style="display:none;">
+                                                          <a href="javascript:void(0);" class="fw-medium link-primary">#VZ2101</a>
+                                                        </td> {% endcomment %}
+                                                        <td class="name">{{ message.name }}</td>
+                                                        <td class="email">{{ message.text|slice:":20" }}</td>
+                                                        {% if default_id == message.id %}
+                                                            <td>
+                                                                <a href="" class="btn btn-sm btn-danger">Deactivate</a>
+                                                            </td>
+                                                        {% else %}
+                                                            <td>
+                                                                <form action="{% url 'make_welcome_message_default' %}" method="post">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" value="{{ message.id }}" name="id"/>
+                                                                    <input type="submit" class="btn btn-sm btn-success" value="Activate"/>
+                                                                </form>
+                                                            </td>
+                                                        {% endif %}
+                                                        <td>
+                                                            {% comment %} <td>
+                                                            <a href="{% url 'welcome_message_edit' id=message.id %}" class="btn btn-info">modify</a>
+                                                          </td>
+                                                            <td><a href="{% url 'welcome_message_delete' id=message.id %}"
+   class="btn btn-danger">delete</a></td> {% endcomment %}
+                                                            <div class="d-flex gap-2">
+                                                                <div class="edit">
+                                                                    <button class="btn btn-sm btn-info edit-item-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#updateModal"
+                                                                            onclick="update_fields('{{forloop.counter0}}')">
+                                                                        Edit
+                                                                    </button>
+                                                                </div>
+                                                                <div class="remove">
+                                                                    <button class="btn btn-sm btn-danger remove-item-btn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#deleteRecordModal">
+                                                                        Remove
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="noresult" style="display: none">
+                                            <div class="text-center">
+                                                <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
+                                                colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px">
+                                                </lord-icon>
+                                                <h5 class="mt-2">Sorry! No Result Found</h5>
+                                                <p class="text-muted mb-0">
+                                                    We've searched more than 150+ Orders We did not find any
+                                                    orders for you search.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="pagination-wrap hstack gap-2">
+                                            <a class="page-item pagination-prev disabled" href="#">Previous</a>
+                                            <ul class="pagination listjs-pagination mb-0">
+                                            </ul>
+                                            <a class="page-item pagination-next" href="#">Next</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                When and how to show the Welcome Message in you DM ?
+                                When someone open your DM for the first time
+                                If you change the message, those who already saw it will see the new one 7 days after that
+                                When your conversation is deleted and they come back to DM you
+                                These rules are decided by Twitter and cannot be changed
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+                <div class="modal fade"
+                     id="createModal"
+                     tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light p-3">
+                                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                        id="close-modal"></button>
+                            </div>
+                            <form action="{% url 'welcome_message_create' %}" method="post">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <div class="mb-3" id="modal-id" style="display: none;">
+                                        <label for="id-field" class="form-label">ID</label>
+                                        <input type="text"
+                                               id="id-field"
+                                               class="form-control"
+                                               placeholder="ID"
+                                               readonly/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name-field" class="form-label">Name</label>
+                                        <input type="text"
+                                               id="name-field"
+                                               class="form-control"
+                                               name="name"
+                                               placeholder="Enter Name"
+                                               required/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="text-field" class="form-label">Text</label>
+                                        <textarea class="form-control"
+                                                  aria-label="With textarea"
+                                                  name="text"
+                                                  id="text-field"></textarea>
+                                    </div>
+                                    <div class="form-check form-switch form-switch-lg mb-3">
+                                        <label for="active" class="form-label">Activate</label>
+                                        <input type="checkbox" class="form-check-input" id="active" name="active"/>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="hstack gap-2 justify-content-end">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success" id="add-btn">Add Customer</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade"
+                     id="updateModal"
+                     tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light p-3">
+                                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                        id="close-modal"></button>
+                            </div>
+                            <form action="{% url 'welcome_message_update' %}" method="post">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <div class="mb-3" id="modal-id" style="display: none;">
+                                        <label for="id-update-field" class="form-label">
+                                            ID
+                                        </label>
+                                        <input type="text"
+                                               id="id-update-field"
+                                               class="form-control"
+                                               placeholder="ID"
+                                               name="id"
+                                               readonly/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name-update-field" class="form-label">
+                                            Name
+                                        </label>
+                                        <input type="text"
+                                               id="name-update-field"
+                                               class="form-control"
+                                               name="name"
+                                               placeholder="Enter Name"
+                                               required/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="text-update-field" class="form-label">
+                                            Text
+                                        </label>
+                                        <textarea class="form-control"
+                                                  aria-label="With textarea"
+                                                  name="text"
+                                                  id="text-update-field"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="hstack gap-2 justify-content-end">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="submit" class="btn btn-success" id="edit-btn">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade zoomIn"
+                     id="deleteRecordModal"
+                     tabindex="-1"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                        id="btn-close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mt-2 text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
+                                    colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                                    <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                        <h4>
+                                            Are you Sure ?
+                                        </h4>
+                                        <p class="text-muted mx-4 mb-0">
+                                            Are you Sure You want to Remove this Record ?
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button type="button" class="btn w-sm btn-danger " id="delete-record">
+                                        Yes, Delete It!
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end modal -->
+            </div>
+            <!-- container-fluid -->
         </div>
-        <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-      </div>
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary">ادخال</button>
-      </div>
-    </form>
-    
-  </div>
-
-
-  
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
 {% endblock content %}
+{% block extra_js %}
+    <script>
+        var messages = {{ messages_json | safe }}
+        function update_fields(id){
+            message = messages[id];
+
+            console.log(message);
+            id_field = document.getElementById("id-update-field");
+            name_field = document.getElementById("name-update-field");
+            text_field = document.getElementById("text-update-field");
+
+            id_field.value = message["id"];
+            name_field.value = message["name"];
+            text_field.value = message["text"];
+        }
+    </script>
+    <!-- prismjs plugin -->
+    <script src="{% static 'libs/prismjs/prism.js'%}"></script>
+    <script src="{% static 'libs/list.js/dist/list.min.js'%}"></script>
+    <script src="{% static 'libs/list.pagination.js/dist/list.pagination.min.js'%}"></script>
+    <!-- listjs init -->
+    <script src="{% static 'js/pages/listjs.init.js'%}"></script>
+{% endblock extra_js %}
