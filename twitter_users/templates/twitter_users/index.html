@@ -1,0 +1,144 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Dashboard
+{% endblock title %}
+{% block extra_css %}
+    <!-- jsvectormap css -->
+    <link href="{% static 'libs/jsvectormap/dist/css/jsvectormap.min.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+    <!--Swiper slider css-->
+    <link href="{% static 'libs/swiper/swiper-bundle.min.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Home" title="Home" %}
+                    {% comment %} <span data-key="t-home-page">الصفحة الرئيسية</span> {% endcomment %}
+                {% endblock pagetitle %}
+            </div>
+            <!-- container-fluid -->
+            <div class="row mt-4 mx-4">
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card">
+                        <div class="card-body text-center p-4">
+                            <img src="{% static 'images/welcome_message.png' %}" alt="" height="100">
+                            <h2 class="mb-1 mt-4">
+                                <a href="{% url 'welcome_message_create_page' %}" class="link-primary">Welcome Message</a>
+                            </h2>
+                            <div class="row mt-4">
+                                <h6>Add Welcome Messages to your account</h6>
+                            </div>
+                            <div class="mt-4">
+                                {% if dm_access %}
+                                    <a href="{% url 'welcome_message_create_page' %}"
+                                       class="btn btn-light w-100">View Message</a>
+                                {% else %}
+                                    <a href="{% url 'twitter_dm_login' %}" class="btn btn-success w-100">Give Access</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end col-->
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card">
+                        <div class="card-body text-center p-4">
+                            <img src="{% static 'images/retweet_blue.png' %}" alt="" height="45">
+                            <h2 class="mb-1 mt-4">
+                                <a href="{% url 'remove_retweets_create_page' %}" class="link-primary">Remove Retweets</a>
+                            </h2>
+                            {% comment %} <p class="text-muted mb-4">Remove Retweets</p> {% endcomment %}
+                            <div class="row mt-4">
+                                <h6>Remove Yout Retweets automatically after a certain amount of time</h6>
+                            </div>
+                            {% if rm_rt_access  %}
+                                <div class="row mt-4">
+                                    {% if minutes_rm_rt >= 0 %}
+                                        <div class="col-lg-6 border-end-dashed border-end">
+                                            <h5>{{ minutes_rm_rt }}</h5>
+                                            <span class="text-muted">Number of Minutes</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-lg-6 border-end-dashed border-end m-auto">
+                                            <a href="{% url 'remove_retweets_create_page' %}"
+                                               class="btn btn-success w-100">Activate</a>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-lg-6">
+                                        <h5>{{ removed_rts_count }}</h5>
+                                        <span class="text-muted">Number of Retweets Removed For You</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="{% url 'remove_retweets_create_page' %}" class="btn btn-light w-100">View Details</a>
+                                </div>
+                            {% else %}
+                                <div class="mt-4">
+                                    <a href="{% url 'twitter_rm_rt_login' %}" class="btn btn-success w-100">Give Access</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!--end col-->
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card">
+                        <div class="card-body text-center p-4">
+                            <img src="{% static 'images/retweet_blue.png' %}" alt="" height="45">
+                            <h2 class="mb-1 mt-4">
+                                <a href="{% url 'auto_retweet_create' %}" class="link-primary">Auto Retweet</a>
+                            </h2>
+                            <div class="row mt-4">
+                                <h6>Auto Retweet your own tweets after a given number of hours</h6>
+                            </div>
+                            {% if rm_rt_access  %}
+                                <div class="row mt-4">
+                                    {% if hours_auto_rt >= 0 %}
+                                        <div class="col-lg-6 border-end-dashed border-end">
+                                            <h5>{{ hours_auto_rt }}</h5>
+                                            <span class="text-muted">Number of Hours</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-lg-6 border-end-dashed border-end m-auto">
+                                            <a href="{% url 'auto_retweet_create' %}" class="btn btn-success w-100">Activate</a>
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-lg-6">
+                                        <h5>{{ auto_rts_count }}</h5>
+                                        <span class="text-muted">Number of Auto Retweets</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="{% url 'auto_retweet_create' %}" class="btn btn-light w-100">View Details</a>
+                                </div>
+                            {% else %}
+                                <div class="mt-4">
+                                    <a href="{% url 'twitter_rm_rt_login' %}" class="btn btn-success w-100">Give Access</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!--end col-->
+            </div>
+        </div>
+        <!-- End Page-content -->
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <!-- Vector map-->
+    <script src="{% static 'libs/jsvectormap/dist/js/jsvectormap.min.js'%}"></script>
+    <script src="{% static 'libs/jsvectormap/dist/maps/world-merc.js'%}"></script>
+    <!--Swiper slider js-->
+    <script src="{% static 'libs/swiper/swiper-bundle.min.js'%}"></script>
+{% endblock extra_js %}

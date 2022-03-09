@@ -1,0 +1,150 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock title %}
+{% block extra_css %}
+    <!-- jsvectormap css -->
+    <link href="{% static 'libs/jsvectormap/dist/css/jsvectormap.min.css'%}" rel="stylesheet" type="text/css" />
+
+    <!--Swiper slider css-->
+    <link href="{% static 'libs/swiper/swiper-bundle.min.css'%}" rel="stylesheet" type="text/css" />
+{% endblock extra_css %}
+
+{% block content %}
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+                <div class="container-fluid">
+                    {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Dashboards" title="Dashboard" %}
+                    {% comment %} <span data-key="t-home-page">الصفحة الرئيسية</span> {% endcomment %}
+                    {% endblock pagetitle %}
+                    
+                </div>
+                <!-- container-fluid -->
+
+                <div class="row">
+                    <div class="col-xl-2"></div>
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="card-header border-0 align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Remove Retweets Counts</h4>
+                                <div>
+                                    <button type="button" class="btn btn-soft-secondary btn-sm">
+                                        ALL
+                                    </button>
+                                    <button type="button" class="btn btn-soft-secondary btn-sm">
+                                        1M
+                                    </button>
+                                    <button type="button" class="btn btn-soft-secondary btn-sm">
+                                        6M
+                                    </button>
+                                    <button type="button" class="btn btn-soft-primary btn-sm">
+                                        1Y
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- end card header -->
+                            <div class="card-header p-0 border-0 bg-soft-light">
+                                <div class="row g-0 text-center">
+                                    <div class="col-6 col-sm-3">
+                                        <div class="p-3 border border-dashed border-start-0">
+                                            <h5 class="mb-1"><span class="counter-value"
+                                                    data-target="{{ twitter_user.removed_rts_count }}">0</span></h5>
+                                            <p class="text-muted mb-0">Total Number</p>
+                                        </div>
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="p-3 border border-dashed border-start-0">
+                                            <h5 class="mb-1">$<span class="counter-value"
+                                                    data-target="22.89">0</span>k</h5>
+                                            <p class="text-muted mb-0">Earnings</p>
+                                        </div>
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="p-3 border border-dashed border-start-0">
+                                            <h5 class="mb-1"><span class="counter-value"
+                                                    data-target="367">0</span></h5>
+                                            <p class="text-muted mb-0">Refunds</p>
+                                        </div>
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-6 col-sm-3">
+                                        <div class="p-3 border border-dashed border-start-0 border-end-0">
+                                            <h5 class="mb-1 text-success"><span class="counter-value"
+                                                    data-target="18.92">0</span>%</h5>
+                                            <p class="text-muted mb-0">Conversation Ratio</p>
+                                        </div>
+                                    </div>
+                                    <!--end col-->
+                                </div>
+                            </div><!-- end card header -->
+                            
+
+                            <div class="card-body p-0 pb-2">
+                                <div class="w-100">
+                                    <div id="customer_impression_charts"
+                                        data-colors='["--vz-warning", "--vz-primary", "--vz-success"]'
+                                        class="apex-charts" dir="ltr"></div>
+                                </div>
+                            </div><!-- end card body -->
+                        </div><!-- end card -->
+                    </div><!-- end col -->
+                    <div class="col-xl-2"></div>
+
+                </div>
+
+                <div class="container mx-auto mt-5" style="width: 75%;">
+                    
+                    <h1 class="text-center">أهلا وسهلا</h1>
+
+                    {% if user.is_authenticated %}
+                    {% comment %} {% if %}{% else %}{% endif %} {% endcomment %}
+                    <p>
+                        <p>رقم المستخدم: {{ user.id }}</p>
+                        <p>آخر تسجيل دخول: {{ user.last_login }}</p>
+                        <p>تاريخ الانضمام إلى موقعنا: {{ user.date_joined }}</p>
+                        <p>اسم المستخدم: {{ user.first_name }}</p>
+                        {% if minutes_rt == -1 %}
+                        <p>أداة إزالة إعادة التغريد غير مفعلة</p>
+                        {% else %}
+                        <p>يتم ازالة اعادة التغريد الأقدم من: {{ minutes_rt }} دقيقة</p>
+                        {% endif %}
+                        <a href="{% url 'twitter_logout' %}">Logout</a>
+                    </p>
+                    {% endif %}
+
+                    <ul>
+                    {% for tweet in tweets %}
+                        <li>
+                        {{ tweet }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <!-- End Page-content -->
+
+        </div>
+        <!-- end main content-->
+{% endblock content %}
+
+{% block extra_js %}
+<!-- apexcharts -->
+<script src="{% static 'libs/apexcharts/dist/apexcharts.min.js'%}"></script>
+
+<!-- Vector map-->
+<script src="{% static 'libs/jsvectormap/dist/js/jsvectormap.min.js'%}"></script>
+<script src="{% static 'libs/jsvectormap/dist/maps/world-merc.js'%}"></script>
+
+<!--Swiper slider js-->
+<script src="{% static 'libs/swiper/swiper-bundle.min.js'%}"></script>
+
+<!-- Dashboard init -->
+<script src="{% static 'js/pages/dashboard-ecommerce.init.js'%}"></script>
+{% endblock extra_js %}

@@ -1,0 +1,90 @@
+{% load static %}
+{% block sidebar %}
+    <!-- ========== App Menu ========== -->
+    <div class="app-menu navbar-menu">
+        <!-- LOGO -->
+        <div class="navbar-brand-box">
+            <!-- Dark Logo-->
+            <a href="{% url 'index' %}" class="logo logo-dark">
+                <span class="logo-sm">
+                    <img src="{% static 'images/logo-sm.png' %}" alt="" height="22"/>
+                </span>
+                <span class="logo-lg">
+                    <img src="{% static 'images/logo-dark.png' %}" alt="" height="17"/>
+                </span>
+            </a>
+            <!-- Light Logo-->
+            <a href="{% url 'index' %}" class="logo logo-light">
+                <span class="logo-sm">
+                    <img src="{% static 'images/logo-sm.png' %}" alt="" height="22"/>
+                </span>
+                <span class="logo-lg">
+                    <img src="{% static 'images/logo-light.png' %}" alt="" height="17"/>
+                </span>
+            </a>
+            <button type="button"
+                    class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+                    id="vertical-hover">
+                <i class="ri-record-circle-line"></i>
+            </button>
+        </div>
+        <div id="scrollbar">
+            <div class="container-fluid">
+                <div id="two-column-menu"></div>
+                <ul class="navbar-nav" id="navbar-nav">
+                    <li class="menu-title">
+                        <span data-key="t-menu">القائمة</span>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="nav-link"
+                           href="{% url 'welcome_message_create_page' %}">
+                            <i class="las la-envelope"></i> <span data-key="t-welcome-message">رسالة الترحيب</span>
+                        </a>
+                        <a class="nav-link"
+                           href="{% url 'remove_retweets_create_page' %}">
+                            <i class="las la-retweet"></i> <span data-key="t-remove-retweets">إزالة إعادة التغريد</span>
+                        </a>
+                        <a class="nav-link"
+                           href="{% url 'auto_retweet_create' %}">
+                            <i class="las la-retweet"></i> <span data-key="t-auto-retweet">إعادة التغريد تلقائيا</span>
+                        </a>
+                    </li>
+                    {% comment %} <li class="nav-item">
+                        <a class="nav-link menu-link"
+                           href="#sidebarTools"
+                           data-bs-toggle="collapse"
+                           role="button"
+                           aria-expanded="false"
+                           aria-controls="sidebarTools">
+                            <i class="las la-tools"></i> <span data-key="t-tools">الأدوات</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebarTools">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="{% url 'welcome_message_create_page' %}"
+                                       class="nav-link"
+                                       data-key="t-welcome-message">رسالة الترحيب</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'remove_retweets_create_page' %}"
+                                       class="nav-link"
+                                       data-key="t-remove-retweets">إزالة إعادة التغريد</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'auto_retweet_create' %}"
+                                       class="nav-link"
+                                       data-key="t-auto-retweet">إعادة التغريد تلقائيا</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li> {% endcomment %}
+                </ul>
+            </div>
+            <!-- Sidebar -->
+        </div>
+    </div>
+    <!-- Left Sidebar End -->
+    <!-- Vertical Overlay-->
+    <div class="vertical-overlay"></div>
+{% endblock sidebar %}
