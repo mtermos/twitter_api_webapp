@@ -23,19 +23,22 @@ def index(request):
     
     if request.user.is_authenticated:
         twitter_user = TwitterUser.objects.filter(user=request.user).first()
-        context["minutes_rt"] = twitter_user.minutes_rt
 
-        if twitter_user.twitter_oauth_token:
-            context["rm_rt_access"] = True
+        if twitter_user:
+            context["minutes_rt"] = twitter_user.minutes_rt
 
-            context["minutes_rm_rt"] = twitter_user.minutes_rt
-            context["removed_rts_count"] = twitter_user.removed_rts_count
+            if twitter_user.twitter_oauth_token:
+                context["rm_rt_access"] = True
 
-            context["hours_auto_rt"] = twitter_user.hours_auto_rt
-            context["auto_rts_count"] = twitter_user.auto_rts_count
+                context["minutes_rm_rt"] = twitter_user.minutes_rt
+                context["removed_rts_count"] = twitter_user.removed_rts_count
 
-        if twitter_user.twitter_dm_oauth_token:
-            context["dm_access"] = True
+                context["hours_auto_rt"] = twitter_user.hours_auto_rt
+                context["auto_rts_count"] = twitter_user.auto_rts_count
+
+            if twitter_user.twitter_dm_oauth_token:
+                context["dm_access"] = True
+                
 
     return render(request, 'twitter_users/index.html', context=context)
 
