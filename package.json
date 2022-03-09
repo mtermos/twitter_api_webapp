@@ -10,9 +10,7 @@
     "> 2%"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "gulp",
-    "start": "browser-sync start --port 8080 -s"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
   },
