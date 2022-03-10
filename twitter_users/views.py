@@ -253,9 +253,6 @@ def auto_retweet_create(request):
             'is_active' : False,
         }
     
-    if request.user_agent.is_mobile:
-        return render(request, 'twitter_users/mobile/auto_retweet.html', context= context)
-
     return render(request, 'twitter_users/auto_retweet.html', context= context)
 
 
