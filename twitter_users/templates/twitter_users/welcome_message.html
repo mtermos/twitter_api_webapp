@@ -11,13 +11,27 @@
         <div class="page-content">
             <div class="container-fluid">
                 {% block pagetitle %}
-                    {% include "partials/page-title.html" with pagetitle="Tools" title="Welcome Message" %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0" data-key="t-welcome-message">رسالة الترحيب</h4>
+
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);" data-key="t-tools">الأدوات</a></li>
+                                        <li class="breadcrumb-item active" data-key="t-welcome-message">رسالة الترحيب</li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 {% endblock pagetitle %}
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title mb-0">Add, Edit & Remove Welcome Messages</h4>
+                                <h4 class="card-title mb-0" data-key="t-welcome-message-card-title">إضافة وتعديل وحذف رسائل الترحيب</h4>
                             </div>
                             <!-- end card header -->
                             <div class="card-body">
@@ -30,7 +44,7 @@
                                                         data-bs-toggle="modal"
                                                         id="create-btn"
                                                         data-bs-target="#createModal">
-                                                    <i class="ri-add-line align-bottom me-1"></i> Add
+                                                    <i class="ri-add-line align-bottom me-1"></i><span data-key="t-add"> إضافة</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -52,10 +66,10 @@
                                                             <input class="form-check-input" type="checkbox" id="checkAll" value="option">
                                                         </div>
                                                     </th> {% endcomment %}
-                                                    <th class="sort" data-sort="name">Name</th>
-                                                    <th class="sort" data-sort="text">Text</th>
-                                                    <th class="sort" data-sort="activate">Activate</th>
-                                                    <th class="sort" data-sort="action">Action</th>
+                                                    <th class="sort" data-sort="name" data-key="t-name">الاسم</th>
+                                                    <th class="sort" data-sort="text" data-key="t-text">النص</th>
+                                                    <th class="sort" data-sort="activate" data-key="t-activate">تفعيل</th>
+                                                    <th class="sort" data-sort="action" data-key="t-action">أفعال</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="list form-check-all">
@@ -73,14 +87,14 @@
                                                         <td class="email">{{ message.text|slice:":20" }}</td>
                                                         {% if default_id == message.id %}
                                                             <td>
-                                                                <a href="" class="btn btn-sm btn-danger">Deactivate</a>
+                                                                <a href="" class="btn btn-sm btn-danger" data-key="t-deactivate">تعطيل</a>
                                                             </td>
                                                         {% else %}
                                                             <td>
                                                                 <form action="{% url 'make_welcome_message_default' %}" method="post">
                                                                     {% csrf_token %}
                                                                     <input type="hidden" value="{{ message.id }}" name="id"/>
-                                                                    <input type="submit" class="btn btn-sm btn-success" value="Activate"/>
+                                                                    <button type="submit" class="btn btn-sm btn-success" data-key="t-activate">تفعيل</button>
                                                                 </form>
                                                             </td>
                                                         {% endif %}
@@ -95,15 +109,17 @@
                                                                     <button class="btn btn-sm btn-info edit-item-btn"
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#updateModal"
+                                                                            data-key="t-edit"
                                                                             onclick="update_fields('{{forloop.counter0}}')">
-                                                                        Edit
+                                                                        تعديل
                                                                     </button>
                                                                 </div>
                                                                 <div class="remove">
                                                                     <button class="btn btn-sm btn-danger remove-item-btn"
                                                                             data-bs-toggle="modal"
+                                                                            data-key="t-remove"
                                                                             data-bs-target="#deleteRecordModal">
-                                                                        Remove
+                                                                        حذف
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -117,28 +133,26 @@
                                                 <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop"
                                                 colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px">
                                                 </lord-icon>
-                                                <h5 class="mt-2">Sorry! No Result Found</h5>
-                                                <p class="text-muted mb-0">
-                                                    We've searched more than 150+ Orders We did not find any
-                                                    orders for you search.
-                                                </p>
+                                                <h5 class="mt-2" data-key="t-no-messages-found">لا يوجد رسائل</h5>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end">
                                         <div class="pagination-wrap hstack gap-2">
-                                            <a class="page-item pagination-prev disabled" href="#">Previous</a>
+                                            <a class="page-item pagination-prev disabled" href="#" data-key="t-previous">السابق</a>
                                             <ul class="pagination listjs-pagination mb-0">
                                             </ul>
-                                            <a class="page-item pagination-next" href="#">Next</a>
+                                            <a class="page-item pagination-next" href="#" data-key="t-next">التالي</a>
                                         </div>
                                     </div>
                                 </div>
-                                When and how to show the Welcome Message in you DM ?
-                                When someone open your DM for the first time
-                                If you change the message, those who already saw it will see the new one 7 days after that
-                                When your conversation is deleted and they come back to DM you
-                                These rules are decided by Twitter and cannot be changed
+                                <p style="white-space: pre-line;" data-key="t-welcome-message-description">
+                                    متى وكيف تظهر رسالة الترحيب في DM؟
+                                     عندما يفتح شخص ما DM الخاص بك لأول مرة
+                                     إذا قمت بتغيير الرسالة ، سيرى أولئك الذين رأوها بالفعل الرسالة الجديدة بعد 7 أيام من ذلك
+                                     عندما يتم حذف محادثتك ويعودون إليك
+                                     يقرر Twitter هذه القواعد ولا يمكن تغييرها
+                                </p>
                             </div>
                             <!-- end card -->
                         </div>
@@ -174,30 +188,29 @@
                                                readonly/>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="name-field" class="form-label">Name</label>
+                                        <label for="name-field" class="form-label" data-key="t-name">الاسم</label>
                                         <input type="text"
                                                id="name-field"
                                                class="form-control"
                                                name="name"
-                                               placeholder="Enter Name"
                                                required/>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="text-field" class="form-label">Text</label>
+                                        <label for="text-field" class="form-label" data-key="t-text">النص</label>
                                         <textarea class="form-control"
                                                   aria-label="With textarea"
                                                   name="text"
                                                   id="text-field"></textarea>
                                     </div>
                                     <div class="form-check form-switch form-switch-lg mb-3">
-                                        <label for="active" class="form-label">Activate</label>
+                                        <label for="active" class="form-label" data-key="t-activate">تفعيل</label>
                                         <input type="checkbox" class="form-check-input" id="active" name="active"/>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <div class="hstack gap-2 justify-content-end">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-success" id="add-btn">Add Customer</button>
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" data-key="t-close">إغلاق</button>
+                                        <button type="submit" class="btn btn-success" id="add-btn" data-key="t-add">إضافة</button>
                                     </div>
                                 </div>
                             </form>
@@ -234,19 +247,18 @@
                                                readonly/>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="name-update-field" class="form-label">
-                                            Name
+                                        <label for="name-update-field" class="form-label" data-key="t-name">
+                                            الاسم
                                         </label>
                                         <input type="text"
                                                id="name-update-field"
                                                class="form-control"
                                                name="name"
-                                               placeholder="Enter Name"
                                                required/>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="text-update-field" class="form-label">
-                                            Text
+                                        <label for="text-update-field" class="form-label" data-key="t-text">
+                                            النص
                                         </label>
                                         <textarea class="form-control"
                                                   aria-label="With textarea"
@@ -256,11 +268,11 @@
                                 </div>
                                 <div class="modal-footer">
                                     <div class="hstack gap-2 justify-content-end">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                            Close
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" data-key="t-close">
+                                            إغلاق
                                         </button>
-                                        <button type="submit" class="btn btn-success" id="edit-btn">
-                                            Update
+                                        <button type="submit" class="btn btn-success" id="edit-btn" data-key="t-update">
+                                            تحديث
                                         </button>
                                     </div>
                                 </div>
@@ -288,21 +300,20 @@
                                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
                                     colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                                     <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                                        <h4>
-                                            Are you Sure ?
+                                        <h4 data-key="t-are-you-sure">
+                                            هل أنت واثق؟
                                         </h4>
-                                        <p class="text-muted mx-4 mb-0">
-                                            Are you Sure You want to Remove this Record ?
+                                        <p class="text-muted mx-4 mb-0" data-key="t-delete-question">
+                                            هل تريد حذف الرسالة؟
                                         </p>
                                     </div>
                                 </div>
                                 <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">
-                                        Close
+                                    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal" data-key="t-close">
+                                        إغلاق
                                     </button>
-                                    <button type="button" class="btn w-sm btn-danger " id="delete-record">
-                                        Yes, Delete It!
-                                    </button>
+
+                                    <a href="{% url 'welcome_message_delete' id=1 %}" class="btn w-sm btn-danger" id="delete-record" data-key="t-confirm-delete">نعم، احذف</a>
                                 </div>
                             </div>
                         </div>
@@ -325,7 +336,6 @@
         function update_fields(id){
             message = messages[id];
 
-            console.log(message);
             id_field = document.getElementById("id-update-field");
             name_field = document.getElementById("name-update-field");
             text_field = document.getElementById("text-update-field");

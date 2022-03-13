@@ -168,8 +168,51 @@
     "t-welcome":"Welcome",
     "t-home-page":"Home Page",
     "t-tools":"Tools",
+    "t-give-access":"Give Access",
+    "t-view-message":"View Message",
+    "t-view-details":"View Details",
+
     "t-welcome-message":"Welcome Message",
+    "t-welcome-message-short":"Add Welcome Messages to your account",
+    "t-welcome-message-card-title":"Add, Edit & Remove Welcome Messages",
+
     "t-remove-retweets":"Remove Retweets",
+    "t-remove-retweets-short":"Remove Yout Retweets automatically after a certain amount of time",
+    "t-number-of-removed-retweets":"Number of Retweets Removed For You",
+
     "t-auto-retweet":"Auto Retweet",
+    "t-auto-retweet-short":"Auto Retweet your own tweets after a given number of hours",
+    "t-number-of-auto-retweets":"Number of Auto Retweets",
+
+    "t-add":"Add",
+    "t-edit":"Edit",
+    "t-close":"Close",
+    "t-update":"Update",
+
+    "t-remove":"Remove",
+
+    "t-no-messages-found":"No Message Found!",
+
+    "t-previous":"Previous",
+    "t-next":"Next",
+    
+    "t-welcome-message-description":"When and how to show the Welcome Message in you DM ?\nWhen someone open your DM for the first time\nIf you change the message, those who already saw it will see the new one 7 days after that\nWhen your conversation is deleted and they come back to DM you\nThese rules are decided by Twitter and cannot be changed",
+    "t-remove-retweets-description":"Every 10 minutes, the script accesses your last 200 tweets/RT and deletes the RTs that exceed the specified time you've given.\nIf your account is restricted/blocked, Twitter blocks this RT Cleaner too, to get it working again quickly, reconnect it from this website when that happens.",
+    "t-auto-retweet-description":"Every 10 minutes, the script accesses your last tweets and retweets the ones tweeted before the specified time you've given.\nIf your account is restricted/blocked, Twitter blocks this Auto Retweeter too, to get it working again quickly, reconnect it from this website when that happens.",
+
+    "t-are-you-sure":"Are you sure?",
+    "t-delete-question":"Are you Sure You want to Remove this Record ?",
+    "t-confirm-delete":"Yes, Delete It!",
+
+    "t-name":"Name",
+    "t-text":"Text",
+    "t-activate":"Activate",
+    "t-action":"Action",
+    "t-deactivate":"Deactivate",
+
+    "t-minutes-number":"Number of Minutes",
+    "t-hours-number":"Number of Hours",
+    "t-submit":"Submit",
+    
     "t-help":"Help"
 }

@@ -21,8 +21,21 @@
         <div class="page-content">
             <div class="container-fluid">
                 {% block pagetitle %}
-                    {% include "partials/page-title.html" with pagetitle="Auto Retweet" title="Auto Retweet" %}
-                    {% comment %} <span data-key="t-home-page">الصفحة الرئيسية</span> {% endcomment %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0" data-key="t-auto-retweet">إعادة التغريد تلقائيا</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item">
+                                            <a href="javascript: void(0);" data-key="t-tools">الأدوات</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" data-key="t-auto-retweet">إعادة التغريد تلقائيا</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endblock pagetitle %}
             </div>
             <!-- container-fluid -->
@@ -30,67 +43,67 @@
                 <div class="col-xxl-6">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
-                            <h4 class="card-title mb-0 flex-grow-1">Auto Retweet</h4>
+                            <h4 class="card-title mb-0 flex-grow-1" data-key="t-auto-retweet">إعادة التغريد تلقائيا</h4>
                         </div>
                         <!-- end card header -->
                         <div class="card-body">
-                            <p class="text-muted">
-                                Every 10 minutes, the script accesses your last tweets and retweets the ones tweeted before the specified time you've given.</br> 
-                                If your account is restricted/blocked, Twitter blocks this Auto Retweeter too, to get it working again quickly, reconnect it from this website when that happens.
-                            </p>
-                            <div class="live-preview">
-                                <form action="{% url 'auto_retweet_store' %}" method="post">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-check form-switch form-switch-lg mb-3">
-                                                <input type="checkbox"
-                                                       class="form-check-input"
-                                                       id="active"
-                                                       name="active"
-                                                       onclick="update_active();"
-                                                       {% if is_active %} checked{% endif %}/>
-                                                <label class="form-check-label" for="active">تشغيل هذه الخاصية</label>
-                                            </div>
+                            <p class="text-muted" style="white-space: pre-line;" data-key="t-auto-retweet-description">
+                                كل 10 دقائق ، يصل البرنامج النصي إلى تغريداتك الأخيرة ويعيد تغريدها قبل الوقت المحدد الذي أعطيته.
+                                إذا كان حسابك مقيدًا / محظورًا ، فإن Twitter يحظر إعادة التغريد التلقائي هذا أيضًا ، لجعله يعمل مرة أخرى بسرعة ، أعد توصيله من هذا الموقع عند حدوث ذلك.
+                                </p>
+                        <div class="live-preview">
+                            <form action="{% url 'auto_retweet_store' %}" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch form-switch-lg mb-3">
+                                            <input type="checkbox"
+                                                   class="form-check-input"
+                                                   id="active"
+                                                   name="active"
+                                                   onclick="update_active();"
+                                                   {% if is_active %} checked{% endif %}/>
+                                            <label class="form-check-label" for="active" data-key="t-activate">تفعيل</label>
                                         </div>
-                                        <!--end col-->
-                                        <div class="col-md-6"></div>
-                                        <!--end col-->
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="hours_auto_rt" class="form-label">عدل عدد الساعات:</label>
-                                                <input type="number"
-                                                       class="form-control"
-                                                       placeholder="Enter company name"
-                                                       id="hours_auto_rt"
-                                                       name="hours_auto_rt"
-                                                       value="{{ hours_auto_rt }}"
-                                                       placeholder="الساعات"
-                                                       {% if not is_active %} disabled{% endif %}/>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
-                                        <div class="col-md-6"></div>
-                                        <!--end col-->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
                                     </div>
-                                    <!--end row-->
-                                </form>
-                            </div>
+                                    <!--end col-->
+                                    <div class="col-md-6"></div>
+                                    <!--end col-->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="hours_auto_rt" class="form-label" data-key="t-hours-number">عدد الساعات</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   placeholder="Enter company name"
+                                                   id="hours_auto_rt"
+                                                   name="hours_auto_rt"
+                                                   value="{{ hours_auto_rt }}"
+                                                   placeholder="الساعات"
+                                                   {% if not is_active %} disabled{% endif %}/>
+                                        </div>
+                                    </div>
+                                    <!--end col-->
+                                    <div class="col-md-6"></div>
+                                    <!--end col-->
+                                    <div class="col-lg-12">
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary" data-key="t-submit">إدخال</button>
+                                        </div>
+                                    </div>
+                                    <!--end col-->
+                                </div>
+                                <!--end row-->
+                            </form>
                         </div>
                     </div>
                 </div>
-                <!-- end col -->
             </div>
+            <!-- end col -->
         </div>
-        <!-- End Page-content -->
     </div>
-    <!-- end main content-->
+    <!-- End Page-content -->
+</div>
+<!-- end main content-->
 {% endblock content %}
 {% block extra_js %}
     <script>

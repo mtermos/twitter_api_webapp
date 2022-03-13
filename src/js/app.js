@@ -68,7 +68,6 @@ File: Main Js File
             if (this.readyState === 4 && this.status === 200) {
                 var data = JSON.parse(this.responseText);
                 Object.keys(data).forEach(function (key) {
-                    console.log(data["t-welcome"]);
                     var elements = document.querySelectorAll("[data-key='" + key + "']");
                     elements.forEach(function (elem) {
                         elem.textContent = data[key];
@@ -1243,7 +1242,7 @@ File: Main Js File
 
             // open right sidebar on first time load
             var offCanvas = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]');
-            (offCanvas) ? offCanvas.click(): '';
+            (offCanvas) ? offCanvas: '';
         } else {
             var isLayoutAttributes = {};
             isLayoutAttributes['data-layout'] = sessionStorage.getItem('data-layout');

@@ -21,8 +21,20 @@
         <div class="page-content">
             <div class="container-fluid">
                 {% block pagetitle %}
-                    {% include "partials/page-title.html" with pagetitle="Home" title="Home" %}
-                    {% comment %} <span data-key="t-home-page">الصفحة الرئيسية</span> {% endcomment %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0" data-key="t-home-page">الصفحة الرئيسية</h4>
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item">
+                                            <a href="javascript: void(0);" data-key="t-home-page">الصفحة الرئيسية</a>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endblock pagetitle %}
             </div>
             <!-- container-fluid -->
@@ -32,17 +44,17 @@
                         <div class="card-body text-center p-4">
                             <img src="{% static 'images/welcome_message.png' %}" alt="" height="100">
                             <h2 class="mb-1 mt-4">
-                                <a href="{% url 'welcome_message_create_page' %}" class="link-primary">Welcome Message</a>
+                                <a href="{% url 'welcome_message_create_page' %}" class="link-primary" data-key="t-welcome-message">رسالة الترحيب</a>
                             </h2>
                             <div class="row mt-4">
-                                <h6>Add Welcome Messages to your account</h6>
+                                <h6 data-key="t-welcome-message-short">أضف رسائل ترحيب إلى حسابك</h6>
                             </div>
                             <div class="mt-4">
                                 {% if dm_access %}
                                     <a href="{% url 'welcome_message_create_page' %}"
-                                       class="btn btn-light w-100">View Message</a>
+                                       class="btn btn-light w-100" data-key="t-view-message">عرض الرسالة</a>
                                 {% else %}
-                                    <a href="{% url 'twitter_dm_login' %}" class="btn btn-success w-100">Give Access</a>
+                                    <a href="{% url 'twitter_dm_login' %}" class="btn btn-success w-100" data-key="t-give-access">إعطاء الإذن</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -54,36 +66,37 @@
                         <div class="card-body text-center p-4">
                             <img src="{% static 'images/retweet_blue.png' %}" alt="" height="45">
                             <h2 class="mb-1 mt-4">
-                                <a href="{% url 'remove_retweets_create_page' %}" class="link-primary">Remove Retweets</a>
+                                <a href="{% url 'remove_retweets_create_page' %}" class="link-primary" data-key="t-remove-retweets">إزالة إعادة التغريد</a>
                             </h2>
                             {% comment %} <p class="text-muted mb-4">Remove Retweets</p> {% endcomment %}
                             <div class="row mt-4">
-                                <h6>Remove Yout Retweets automatically after a certain amount of time</h6>
+                                <h6 data-key="t-remove-retweets-short">إزالة إعادات التغريد تلقائيًا بعد فترة زمنية معينة</h6>
                             </div>
                             {% if rm_rt_access  %}
                                 <div class="row mt-4">
                                     {% if minutes_rm_rt >= 0 %}
                                         <div class="col-lg-6 border-end-dashed border-end">
                                             <h5>{{ minutes_rm_rt }}</h5>
-                                            <span class="text-muted">Number of Minutes</span>
+                                            <span class="text-muted" data-key="t-minutes-number">عدد الدقائق</span>
                                         </div>
                                     {% else %}
                                         <div class="col-lg-6 border-end-dashed border-end m-auto">
                                             <a href="{% url 'remove_retweets_create_page' %}"
-                                               class="btn btn-success w-100">Activate</a>
+                                               class="btn btn-success w-100" data-key="t-activate">تفعيل</a>
                                         </div>
                                     {% endif %}
                                     <div class="col-lg-6">
                                         <h5>{{ removed_rts_count }}</h5>
-                                        <span class="text-muted">Number of Retweets Removed For You</span>
+                                        <span class="text-muted" data-key="t-number-of-removed-retweets">عدد إعادات التغريد التي تمت إزالتها من أجلك</span>
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <a href="{% url 'remove_retweets_create_page' %}" class="btn btn-light w-100">View Details</a>
+                                    <a href="{% url 'remove_retweets_create_page' %}"
+                                       class="btn btn-light w-100" data-key="t-view-details">عرض التفاصيل</a>
                                 </div>
                             {% else %}
                                 <div class="mt-4">
-                                    <a href="{% url 'twitter_rm_rt_login' %}" class="btn btn-success w-100">Give Access</a>
+                                    <a href="{% url 'twitter_rm_rt_login' %}" class="btn btn-success w-100" data-key="t-give-access">إعطاء الإذن</a>
                                 </div>
                             {% endif %}
                         </div>
@@ -95,34 +108,34 @@
                         <div class="card-body text-center p-4">
                             <img src="{% static 'images/retweet_blue.png' %}" alt="" height="45">
                             <h2 class="mb-1 mt-4">
-                                <a href="{% url 'auto_retweet_create' %}" class="link-primary">Auto Retweet</a>
+                                <a href="{% url 'auto_retweet_create' %}" class="link-primary" data-key="t-auto-retweet">إعادة التغريد تلقائيا</a>
                             </h2>
                             <div class="row mt-4">
-                                <h6>Auto Retweet your own tweets after a given number of hours</h6>
+                                <h6 data-key="t-auto-retweet-short">إعادة التغريد التلقائي لتغريداتك الخاصة بعد عدد معين من الساعات</h6>
                             </div>
                             {% if rm_rt_access  %}
                                 <div class="row mt-4">
                                     {% if hours_auto_rt >= 0 %}
                                         <div class="col-lg-6 border-end-dashed border-end">
                                             <h5>{{ hours_auto_rt }}</h5>
-                                            <span class="text-muted">Number of Hours</span>
+                                            <span class="text-muted" data-key="t-hours-number">عدد الساعات</span>
                                         </div>
                                     {% else %}
                                         <div class="col-lg-6 border-end-dashed border-end m-auto">
-                                            <a href="{% url 'auto_retweet_create' %}" class="btn btn-success w-100">Activate</a>
+                                            <a href="{% url 'auto_retweet_create' %}" class="btn btn-success w-100" data-key="t-activate">تفعيل</a>
                                         </div>
                                     {% endif %}
                                     <div class="col-lg-6">
                                         <h5>{{ auto_rts_count }}</h5>
-                                        <span class="text-muted">Number of Auto Retweets</span>
+                                        <span class="text-muted" data-key="t-number-of-auto-retweets">عدد عمليات إعادة التغريد التلقائية</span>
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <a href="{% url 'auto_retweet_create' %}" class="btn btn-light w-100">View Details</a>
+                                    <a href="{% url 'auto_retweet_create' %}" class="btn btn-light w-100" data-key="t-view-details">عرض التفاصيل</a>
                                 </div>
                             {% else %}
                                 <div class="mt-4">
-                                    <a href="{% url 'twitter_rm_rt_login' %}" class="btn btn-success w-100">Give Access</a>
+                                    <a href="{% url 'twitter_rm_rt_login' %}" class="btn btn-success w-100" data-key="t-give-access">إعطاء الإذن</a>
                                 </div>
                             {% endif %}
                         </div>

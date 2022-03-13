@@ -13,12 +13,12 @@ def twitter_login_required(function):
 
         if twitter_user.twitter_oauth_token is None:
             logout(request)
-            return HttpResponseRedirect(reverse('twitter_users/twitter_login/'))
+            return HttpResponseRedirect(reverse('twitter_login/'))
             
         info = check_token_still_valid(twitter_user)
         if info is None:
             logout(request)
-            return HttpResponseRedirect(reverse('twitter_users/twitter_login/'))
+            return HttpResponseRedirect(reverse('twitter_login/'))
         else:
             request.twitter_user = twitter_user
             return function(request, *args, **kwargs)
