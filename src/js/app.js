@@ -70,7 +70,19 @@ File: Main Js File
                 Object.keys(data).forEach(function (key) {
                     var elements = document.querySelectorAll("[data-key='" + key + "']");
                     elements.forEach(function (elem) {
-                        elem.textContent = data[key];
+                        var text = data[key];
+                        if (elem.dataset.valueAr) {
+                            var new_word = elem.getAttribute("data-value-" + language);
+                            elem.textContent = text.replace("data-value-" + language, new_word);
+                        } else {
+                            elem.textContent = text;
+                        }
+                    })
+                    var placeholders = document.querySelectorAll("[data-placeholder='" + key + "']");
+                    placeholders.forEach(function (elem) {
+                        console.log(elem);
+                        var text = data[key];
+                        elem.placeholder = text;
                     })
                 });
             }

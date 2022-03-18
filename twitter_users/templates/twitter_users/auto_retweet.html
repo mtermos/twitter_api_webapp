@@ -47,10 +47,20 @@
                         </div>
                         <!-- end card header -->
                         <div class="card-body">
-                            <p class="text-muted" style="white-space: pre-line;" data-key="t-auto-retweet-description">
-                                كل 10 دقائق ، يصل البرنامج النصي إلى تغريداتك الأخيرة ويعيد تغريدها قبل الوقت المحدد الذي أعطيته.
-                                إذا كان حسابك مقيدًا / محظورًا ، فإن Twitter يحظر إعادة التغريد التلقائي هذا أيضًا ، لجعله يعمل مرة أخرى بسرعة ، أعد توصيله من هذا الموقع عند حدوث ذلك.
+
+                            {% if is_active %}
+                                <p class="text-muted" style="white-space: pre-line;" data-key="t-auto-retweet-active-description"  data-value-ar="{{hours_auto_rt_arabic}}" data-value-en="{{hours_auto_rt}}">
+                                    كل '{{hours_auto_rt_arabic}} ساعات'، تقوم الأداة اوتوماتيكاً بإعادة تغريد تغريداتك الآخيرة عند الوقت الذي اخترته، مثال: تريد اعادة تغريد كل ٦ ساعات، ضع ٦ في صندوق الوقت وستقوم الأداة بذلك.
+
+                                    إذا كان حسابك مقيداً او محظوراً، فإن تويتر تحظر الاداة ايضاً. لتشغيل الاداة مرة أخرى تحتاج الى اعطاء إذن جديد.
                                 </p>
+                            {% else %}
+                                <p class="text-muted" style="white-space: pre-line;" data-key="t-auto-retweet-description">
+                                    بعد تشغيل الأداة وتحديد عدد الساعات، ستقوم الأداة عند مرور هذا العدد من الساعات اوتوماتيكاً بإعادة تغريد تغريداتك الآخيرة عند الوقت الذي اخترته، مثال: تريد اعادة تغريد كل ٦ ساعات، ضع ٦ في صندوق الوقت وستقوم الأداة بذلك.
+
+                                    إذا كان حسابك مقيداً او محظوراً، فإن تويتر تحظر الاداة ايضاً. لتشغيل الاداة مرة أخرى تحتاج الى اعطاء إذن جديد.
+                                </p>
+                            {% endif %}
                         <div class="live-preview">
                             <form action="{% url 'auto_retweet_store' %}" method="post">
                                 {% csrf_token %}
@@ -72,13 +82,13 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="hours_auto_rt" class="form-label" data-key="t-hours-number">عدد الساعات</label>
-                                            <input type="number"
+                                            <input type="text"
                                                    class="form-control"
-                                                   placeholder="Enter company name"
                                                    id="hours_auto_rt"
                                                    name="hours_auto_rt"
-                                                   value="{{ hours_auto_rt }}"
-                                                   placeholder="الساعات"
+                                                   {% if hours_auto_rt > 0 %}value="{{ hours_auto_rt }}"{% endif %}
+                                                   data-placeholder="t-auto-retweet-placeholder"
+                                                   placeholder="ضع رقم مدة الساعات"
                                                    {% if not is_active %} disabled{% endif %}/>
                                         </div>
                                     </div>

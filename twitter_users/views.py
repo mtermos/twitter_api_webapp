@@ -84,6 +84,7 @@ def remove_retweets_create_page(request):
     if user_minutes >= 0:
         context = {
             'minutes_rt' : user_minutes,
+            'minutes_rt_arabic' : en_to_ar_num(str(user_minutes)),
             'is_active' : True,
         }
     else:
@@ -99,7 +100,11 @@ def remove_retweets_create_page(request):
 def remove_retweets_create(request):
     
     if request.POST.get("active"):
-        request.twitter_user.minutes_rt = request.POST.get("minutes_num")
+        try:
+            minutes_num = int(request.POST.get("minutes_num"))
+            request.twitter_user.minutes_rt = minutes_num
+        except:
+            return redirect('index')
     else:
         request.twitter_user.minutes_rt = -1
 
@@ -125,8 +130,10 @@ def welcome_message_create_page(request):
 
     if wlc_rules and len(wlc_rules) > 0 and wlc_rules[0] is not None:
         rule = wlc_rules[0]
+        rule_id = rule.id
         default_id = rule.welcome_message_id
     else:
+        rule_id = -1
         default_id = -1
 
     messages_json = []
@@ -137,12 +144,17 @@ def welcome_message_create_page(request):
             if "رسالة الترحيب بواسطة" in text.splitlines()[-1]:
                 text = text[:text.rfind('\n')]
 
-            messages_json.append({"id":message.id, "name" : message.name, "text":text})
+            json_message = {"id":message.id, "text":text}
+
+            if hasattr(message, 'name'):
+                json_message["name"] = message.name
+            messages_json.append(json_message)
 
     if welcome_message is not None:
         context = {
             'messages_json' : messages_json,
             'default_id' : default_id,
+            'rule_id' : rule_id,
             'is_set' : True
         }
     else:
@@ -193,6 +205,18 @@ def make_welcome_message_default(request):
 
 @login_required
 @twitter_dm_login_required
+def deactivate_welcome_message(request):
+    api = TwitterAPIDM()
+    rule = api.delete_rule(
+        id = request.POST.get("id"),
+        access_token=request.twitter_user.twitter_dm_oauth_token.oauth_token,
+        access_token_secret= request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
+    )
+
+    return redirect('welcome_message_create_page')
+
+@login_required
+@twitter_dm_login_required
 def welcome_message_edit(request, id):
 
     if not id:
@@ -231,7 +255,7 @@ def welcome_message_update(request):
         access_token_secret = request.twitter_user.twitter_dm_oauth_token.oauth_token_secret,
         id = request.POST.get("id"),
         text = text,
-        name = request.POST.get("name"),
+        # name = request.POST.get("name"),
     )
     return redirect('welcome_message_create_page')
 
@@ -245,6 +269,7 @@ def auto_retweet_create(request):
     if hours_auto_rt >= 0:
         context = {
             'hours_auto_rt' : hours_auto_rt,
+            'hours_auto_rt_arabic' : en_to_ar_num(str(hours_auto_rt)),
             'is_active' : True,
         }
     else:
@@ -261,7 +286,11 @@ def auto_retweet_create(request):
 def auto_retweet_store(request):
     
     if request.POST.get("active"):
-        request.twitter_user.hours_auto_rt = request.POST.get("hours_auto_rt")
+        try:
+            hours_auto_rt = int(request.POST.get("hours_auto_rt"))
+            request.twitter_user.hours_auto_rt = hours_auto_rt
+        except:
+            return redirect('index')
     else:
         request.twitter_user.hours_auto_rt = -1
 
@@ -379,3 +408,18 @@ def twitter_dm_callback(request):
 
 
 
+def en_to_ar_num(number_string):
+    dic = {
+        '0': '۰',
+        '1': '١',
+        '2': '٢',
+        '3': '۳',
+        '4': '٤',
+        '5': '۵',
+        '6': '٦',
+        '7': '۷',
+        '8': '۸',
+        '9': '۹',
+    }
+
+    return "".join([dic[char] for char in number_string])

@@ -19,6 +19,7 @@ urlpatterns = [
     path('welcome_message/create', views.welcome_message_create, name='welcome_message_create'),
     path('welcome_message/delete/<str:id>', views.welcome_message_delete, name='welcome_message_delete'),
     path('welcome_message/make_default', views.make_welcome_message_default, name='make_welcome_message_default'),
+    path('welcome_message/deactivate', views.deactivate_welcome_message, name='deactivate_welcome_message'),
     # path('welcome_message/edit/<str:id>', views.welcome_message_edit, name='welcome_message_edit'),
     path('welcome_message/update', views.welcome_message_update, name='welcome_message_update'),
 

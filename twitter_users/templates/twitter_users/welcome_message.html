@@ -66,7 +66,7 @@
                                                             <input class="form-check-input" type="checkbox" id="checkAll" value="option">
                                                         </div>
                                                     </th> {% endcomment %}
-                                                    <th class="sort" data-sort="name" data-key="t-name">الاسم</th>
+                                                    <th class="sort" data-sort="name" data-key="t-name">الرقم</th>
                                                     <th class="sort" data-sort="text" data-key="t-text">النص</th>
                                                     <th class="sort" data-sort="activate" data-key="t-activate">تفعيل</th>
                                                     <th class="sort" data-sort="action" data-key="t-action">أفعال</th>
@@ -83,11 +83,15 @@
                                                         {% comment %} <td class="id" style="display:none;">
                                                           <a href="javascript:void(0);" class="fw-medium link-primary">#VZ2101</a>
                                                         </td> {% endcomment %}
-                                                        <td class="name">{{ message.name }}</td>
+                                                        <td class="name">{{ forloop.counter }}</td>
                                                         <td class="email">{{ message.text|slice:":20" }}</td>
                                                         {% if default_id == message.id %}
                                                             <td>
-                                                                <a href="" class="btn btn-sm btn-danger" data-key="t-deactivate">تعطيل</a>
+                                                                <form action="{% url 'deactivate_welcome_message' %}" method="post">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" value="{{ rule_id }}" name="id"/>
+                                                                    <button type="submit" class="btn btn-sm btn-danger" data-key="t-deactivate">تعطيل</button>
+                                                                </form>
                                                             </td>
                                                         {% else %}
                                                             <td>
@@ -137,7 +141,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-end">
+                                    <div class="d-flex justify-content-end mb-2">
                                         <div class="pagination-wrap hstack gap-2">
                                             <a class="page-item pagination-prev disabled" href="#" data-key="t-previous">السابق</a>
                                             <ul class="pagination listjs-pagination mb-0">
@@ -147,11 +151,13 @@
                                     </div>
                                 </div>
                                 <p style="white-space: pre-line;" data-key="t-welcome-message-description">
-                                    متى وكيف تظهر رسالة الترحيب في DM؟
-                                     عندما يفتح شخص ما DM الخاص بك لأول مرة
-                                     إذا قمت بتغيير الرسالة ، سيرى أولئك الذين رأوها بالفعل الرسالة الجديدة بعد 7 أيام من ذلك
-                                     عندما يتم حذف محادثتك ويعودون إليك
-                                     يقرر Twitter هذه القواعد ولا يمكن تغييرها
+                                    كيف تعمل رسالة الترحيب في الرسائل؟
+
+                                    رسالة الترحيب عملية اوتوماتيكية لرسالة أنت تكتبها وتظهر لمن يحاول إرسال رسالة على صندوق رسائلك في تويتر.
+
+                                    إذا قمت بتغيير الرسالة، ستظهر الرسالة الجديدة لهم بعد ٧ ايام عندما يتم حذف المحادثة اوتوماتيكياً ويعودون إليك في صندوق الرسائل.
+
+                                    هذه الاساسيات لا يمكن تغييرها وهي من شروط منصة تويتر.
                                 </p>
                             </div>
                             <!-- end card -->
@@ -187,14 +193,14 @@
                                                placeholder="ID"
                                                readonly/>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="name-field" class="form-label" data-key="t-name">الاسم</label>
+                                    {% comment %} <div class="mb-3">
+                                        <label for="name-field" class="form-label" data-key="t-namemessage-name">اسم الرسالة</label>
                                         <input type="text"
                                                id="name-field"
                                                class="form-control"
                                                name="name"
-                                               required/>
-                                    </div>
+                                               />
+                                    </div> {% endcomment %}
                                     <div class="mb-3">
                                         <label for="text-field" class="form-label" data-key="t-text">النص</label>
                                         <textarea class="form-control"
@@ -246,16 +252,16 @@
                                                name="id"
                                                readonly/>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="name-update-field" class="form-label" data-key="t-name">
-                                            الاسم
+                                    {% comment %} <div class="mb-3">
+                                        <label for="name-update-field" class="form-label" data-key="t-message-name">
+                                            اسم الرسالة
                                         </label>
                                         <input type="text"
                                                id="name-update-field"
                                                class="form-control"
                                                name="name"
                                                required/>
-                                    </div>
+                                    </div> {% endcomment %}
                                     <div class="mb-3">
                                         <label for="text-update-field" class="form-label" data-key="t-text">
                                             النص
@@ -337,11 +343,11 @@
             message = messages[id];
 
             id_field = document.getElementById("id-update-field");
-            name_field = document.getElementById("name-update-field");
+            //name_field = document.getElementById("name-update-field");
             text_field = document.getElementById("text-update-field");
 
             id_field.value = message["id"];
-            name_field.value = message["name"];
+            //name_field.value = message["name"];
             text_field.value = message["text"];
         }
     </script>

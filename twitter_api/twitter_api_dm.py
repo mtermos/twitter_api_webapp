@@ -61,7 +61,7 @@ class TwitterAPIDM:
 
             json_payload = {
                 'welcome_message': {
-                    'name': name,
+                    'name': None,
                     'message_data': {'text': text}
                 }
             }
@@ -167,7 +167,7 @@ class TwitterAPIDM:
             print(e)
             return None
 
-    def update_welcome_message(self, access_token, access_token_secret, id, name,text,
+    def update_welcome_message(self, access_token, access_token_secret, id,text, name = None,
         quick_reply_options=None,attachment_type=None, attachment_media_id=None, ctas=None):
         try:
             auth = tweepy.OAuth1UserHandler(
@@ -180,9 +180,11 @@ class TwitterAPIDM:
             api = tweepy.API(auth)
 
             json_payload = {
-                    'name': name,
                     'message_data': {'text': text}
             }
+
+            if name is not None:
+                json_payload["name"] = name
 
             message_data = json_payload['message_data']
             if quick_reply_options is not None:

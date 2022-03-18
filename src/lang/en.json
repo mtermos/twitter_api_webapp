@@ -197,14 +197,21 @@
     "t-next":"Next",
     
     "t-welcome-message-description":"When and how to show the Welcome Message in you DM ?\nWhen someone open your DM for the first time\nIf you change the message, those who already saw it will see the new one 7 days after that\nWhen your conversation is deleted and they come back to DM you\nThese rules are decided by Twitter and cannot be changed",
-    "t-remove-retweets-description":"Every 10 minutes, the script accesses your last 200 tweets/RT and deletes the RTs that exceed the specified time you've given.\nIf your account is restricted/blocked, Twitter blocks this RT Cleaner too, to get it working again quickly, reconnect it from this website when that happens.",
-    "t-auto-retweet-description":"Every 10 minutes, the script accesses your last tweets and retweets the ones tweeted before the specified time you've given.\nIf your account is restricted/blocked, Twitter blocks this Auto Retweeter too, to get it working again quickly, reconnect it from this website when that happens.",
+    
+    "t-remove-retweets-active-description":"Every 'data-value-en minutes' the tool analyzes the last 200 tweets and deletes the retweets from your account. Example: If you have 300 retweets in your account, the tool will delete them from your account automatically.\n\nIf your account is restricted or banned, Twitter blocks the tool as well. To run the tool again you need to give a new permission.",
+    "t-remove-retweets-description":"After running the tool and setting the number of minutes, when that number of minutes has passed, the tool will analyze the last 200 tweets and delete the retweets from your account. Example: If your account has 300 retweets that you have done, the tool will delete it from your account automatically.\n\nIf your account is restricted or banned, Twitter blocks the tool as well. To run the tool again you need to give a new permission.",
+    "t-remove-retweets-placeholder":"Number of minutes",
+
+    "t-auto-retweet-active-description":"Every 'data-value-en hours', the tool automatically retweets your last tweets at the time you chose, ie you want to retweet every 6 hours, put 6 in the time box and the tool will do so.\n\nIf your account is restricted or banned, Twitter will ban this tool also. To run the tool again you need to give a new permission.",
+    "t-auto-retweet-description":"After running the tool and setting the number of hours, when this number of hours has passed, the tool will automatically retweet your last tweets at the time you chose, for example: you want to retweet every 6 hours, put 6 in the time box and the tool will do so.\n\nIf your account is restricted or banned, Twitter also bans the tool. To run the tool again you need to give a new permission.",
+    "t-auto-retweet-placeholder":"Put the number of hours",
 
     "t-are-you-sure":"Are you sure?",
     "t-delete-question":"Are you Sure You want to Remove this Record ?",
     "t-confirm-delete":"Yes, Delete It!",
 
     "t-name":"Name",
+    "t-message-name":"Message Name",
     "t-text":"Text",
     "t-activate":"Activate",
     "t-action":"Action",

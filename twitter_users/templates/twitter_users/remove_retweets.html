@@ -47,10 +47,19 @@
                         </div>
                         <!-- end card header -->
                         <div class="card-body">
-                            <p class="text-muted"  style="white-space: pre-line;" data-key="t-remove-retweets-description">
-                                كل 10 دقائق ، يصل البرنامج النصي إلى آخر 200 تغريدة / RT ويحذف RTs التي تتجاوز الوقت المحدد الذي قدمته.
-                                إذا كان حسابك مقيدًا / محظورًا ، فإن Twitter يحظر RT Cleaner أيضًا ، لتشغيله مرة أخرى بسرعة ، أعد توصيله من موقع الويب هذا عندما يحدث ذلك.
-                            </p>
+                            {% if is_active %}
+                                <p class="text-muted"  style="white-space: pre-line;" data-key="t-remove-retweets-active-description" data-value-ar="{{minutes_rt_arabic}}" data-value-en="{{minutes_rt}}">
+                                    تقوم الأداة كل '{{minutes_rt_arabic}} دقيقة' بتحليل آخر ٢٠٠ تغريدة وتحذف التغريدات المعاد تغريدها في حسابك. مثال: اذا في حسابك ٣٠٠ اعادة تغريد قمت بفعلها، ستقوم الآداة بحذفها من حسابك اوتوماتيكياً.
+
+                                    إذا كان حسابك مقيداً او محظوراً، فإن تويتر تحظر الاداة ايضاً. لتشغيل الاداة مرة أخرى تحتاج الى اعطاء إذن جديد.
+                                </p>
+                            {% else %}
+                                <p class="text-muted"  style="white-space: pre-line;" data-key="t-remove-retweets-description">
+                                    بعد تشغيل الأداة وتحديد عدد الدقائق، ستقوم الأداة عند مرور هذا العدد من الدقائق بتحليل آخر ٢٠٠ تغريدة وتحذف التغريدات المعاد تغريدها في حسابك. مثال: اذا في حسابك ٣٠٠ اعادة تغريد قمت بفعلها، ستقوم الآداة بحذفها من حسابك اوتوماتيكياً.
+
+                                    إذا كان حسابك مقيداً او محظوراً، فإن تويتر تحظر الاداة ايضاً. لتشغيل الاداة مرة أخرى تحتاج الى اعطاء إذن جديد.
+                                </p>
+                            {% endif %}
                         <div class="live-preview">
                             <form action="{% url 'remove_retweets_create' %}" method="post">
                                 {% csrf_token %}
@@ -72,12 +81,13 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="compnayNameinput" class="form-label" data-key="t-minutes-number">عدد الدقائق</label>
-                                            <input type="number"
+                                            <input type="text"
                                                    class="form-control"
-                                                   placeholder="Enter company name"
                                                    id="minutes_num"
                                                    name="minutes_num"
-                                                   value="{{ minutes_rt }}"
+                                                   data-placeholder="t-remove-retweets-placeholder"
+                                                   placeholder="ضع رقم مدة الدقائق وعند اختيار ساعتين كمثال، ضع: 120"
+                                                   {% if minutes_rt > 0 %}value="{{ minutes_rt }}"{% endif %}
                                                    {% if not is_active %} disabled{% endif %}/>
                                         </div>
                                     </div>
