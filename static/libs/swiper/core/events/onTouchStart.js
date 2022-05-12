@@ -2,7 +2,11 @@ import { getWindow, getDocument } from 'ssr-window';
 import $ from '../../shared/dom.js';
 import { now } from '../../shared/utils.js'; // Modified from https://stackoverflow.com/questions/54520554/custom-element-getrootnode-closest-function-crossing-multiple-parent-shadowd
 
-function closestElement(selector, base = this) {
+function closestElement(selector, base) {
+  if (base === void 0) {
+    base = this;
+  }
+
   function __closestFrom(el) {
     if (!el || el === getDocument() || el === getWindow()) return null;
     if (el.assignedSlot) el = el.assignedSlot;
@@ -97,7 +101,14 @@ export default function onTouchStart(event) {
 
   if (e.type !== 'touchstart') {
     let preventDefault = true;
-    if ($targetEl.is(data.focusableElements)) preventDefault = false;
+
+    if ($targetEl.is(data.focusableElements)) {
+      preventDefault = false;
+
+      if ($targetEl[0].nodeName === 'SELECT') {
+        data.isTouched = false;
+      }
+    }
 
     if (document.activeElement && $(document.activeElement).is(data.focusableElements) && document.activeElement !== $targetEl[0]) {
       document.activeElement.blur();
@@ -108,6 +119,10 @@ export default function onTouchStart(event) {
     if ((params.touchStartForcePreventDefault || shouldPreventDefault) && !$targetEl[0].isContentEditable) {
       e.preventDefault();
     }
+  }
+
+  if (swiper.params.freeMode && swiper.params.freeMode.enabled && swiper.freeMode && swiper.animating && !params.cssMode) {
+    swiper.freeMode.onTouchStart();
   }
 
   swiper.emit('touchStart', e);

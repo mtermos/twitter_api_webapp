@@ -1,11 +1,12 @@
 import { getWindow } from 'ssr-window';
 import $ from '../../shared/dom.js';
-export default function Lazy({
-  swiper,
-  extendParams,
-  on,
-  emit
-}) {
+export default function Lazy(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   extendParams({
     lazy: {
       checkInView: false,
@@ -24,7 +25,11 @@ export default function Lazy({
   let scrollHandlerAttached = false;
   let initialImageLoaded = false;
 
-  function loadInSlide(index, loadInDuplicate = true) {
+  function loadInSlide(index, loadInDuplicate) {
+    if (loadInDuplicate === void 0) {
+      loadInDuplicate = true;
+    }
+
     const params = swiper.params.lazy;
     if (typeof index === 'undefined') return;
     if (swiper.slides.length === 0) return;

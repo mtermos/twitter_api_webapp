@@ -1,4 +1,4 @@
-import { h, ref, onMounted, onUpdated, onBeforeUnmount, watch, nextTick } from 'vue';
+import { h, ref, onMounted, onUpdated, onBeforeUnmount, watch, nextTick, provide } from 'vue';
 import { getParams } from './get-params.js';
 import { initSwiper, mountSwiper } from './init-swiper.js';
 import { needsScrollbar, needsNavigation, needsPagination, uniqueClasses, extend } from './utils.js';
@@ -116,6 +116,10 @@ const Swiper = {
     },
     slidesPerView: {
       type: [Number, String],
+      default: undefined
+    },
+    maxBackfaceHiddenSlides: {
+      type: Number,
       default: undefined
     },
     slidesPerGroup: {
@@ -465,14 +469,19 @@ const Swiper = {
     freeMode: {
       type: [Boolean, Object],
       default: undefined
+    },
+    enabled: {
+      type: Boolean,
+      default: undefined
     }
   },
-  emits: ['_beforeBreakpoint', '_containerClasses', '_slideClass', '_slideClasses', '_swiper', 'activeIndexChange', 'afterInit', 'autoplay', 'autoplayStart', 'autoplayStop', 'beforeDestroy', 'beforeInit', 'beforeLoopFix', 'beforeResize', 'beforeSlideChangeStart', 'beforeTransitionStart', 'breakpoint', 'changeDirection', 'click', 'disable', 'doubleTap', 'doubleClick', 'destroy', 'enable', 'fromEdge', 'hashChange', 'hashSet', 'imagesReady', 'init', 'keyPress', 'lazyImageLoad', 'lazyImageReady', 'lock', 'loopFix', 'momentumBounce', 'navigationHide', 'navigationShow', 'observerUpdate', 'orientationchange', 'paginationHide', 'paginationRender', 'paginationShow', 'paginationUpdate', 'progress', 'reachBeginning', 'reachEnd', 'realIndexChange', 'resize', 'scroll', 'scrollbarDragEnd', 'scrollbarDragMove', 'scrollbarDragStart', 'setTransition', 'setTranslate', 'slideChange', 'slideChangeTransitionEnd', 'slideChangeTransitionStart', 'slideNextTransitionEnd', 'slideNextTransitionStart', 'slidePrevTransitionEnd', 'slidePrevTransitionStart', 'slideResetTransitionStart', 'slideResetTransitionEnd', 'sliderMove', 'sliderFirstMove', 'slidesLengthChange', 'slidesGridLengthChange', 'snapGridLengthChange', 'snapIndexChange', 'swiper', 'tap', 'toEdge', 'touchEnd', 'touchMove', 'touchMoveOpposite', 'touchStart', 'transitionEnd', 'transitionStart', 'unlock', 'update', 'zoomChange'],
+  emits: ['_beforeBreakpoint', '_containerClasses', '_slideClass', '_slideClasses', '_swiper', '_freeModeNoMomentumRelease', 'activeIndexChange', 'afterInit', 'autoplay', 'autoplayStart', 'autoplayStop', 'autoplayPause', 'autoplayResume', 'beforeDestroy', 'beforeInit', 'beforeLoopFix', 'beforeResize', 'beforeSlideChangeStart', 'beforeTransitionStart', 'breakpoint', 'changeDirection', 'click', 'disable', 'doubleTap', 'doubleClick', 'destroy', 'enable', 'fromEdge', 'hashChange', 'hashSet', 'imagesReady', 'init', 'keyPress', 'lazyImageLoad', 'lazyImageReady', 'lock', 'loopFix', 'momentumBounce', 'navigationHide', 'navigationShow', 'observerUpdate', 'orientationchange', 'paginationHide', 'paginationRender', 'paginationShow', 'paginationUpdate', 'progress', 'reachBeginning', 'reachEnd', 'realIndexChange', 'resize', 'scroll', 'scrollbarDragEnd', 'scrollbarDragMove', 'scrollbarDragStart', 'setTransition', 'setTranslate', 'slideChange', 'slideChangeTransitionEnd', 'slideChangeTransitionStart', 'slideNextTransitionEnd', 'slideNextTransitionStart', 'slidePrevTransitionEnd', 'slidePrevTransitionStart', 'slideResetTransitionStart', 'slideResetTransitionEnd', 'sliderMove', 'sliderFirstMove', 'slidesLengthChange', 'slidesGridLengthChange', 'snapGridLengthChange', 'snapIndexChange', 'swiper', 'tap', 'toEdge', 'touchEnd', 'touchMove', 'touchMoveOpposite', 'touchStart', 'transitionEnd', 'transitionStart', 'unlock', 'update', 'zoomChange'],
 
-  setup(props, {
-    slots: originalSlots,
-    emit
-  }) {
+  setup(props, _ref) {
+    let {
+      slots: originalSlots,
+      emit
+    } = _ref;
     const {
       tag: Tag,
       wrapperTag: WrapperTag
@@ -507,7 +516,11 @@ const Swiper = {
       breakpointChanged.value = true;
     };
 
-    swiperParams.onAny = (event, ...args) => {
+    swiperParams.onAny = function (event) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
       emit(event, ...args);
     };
 
@@ -572,7 +585,8 @@ const Swiper = {
       }
 
       breakpointChanged.value = false;
-    }); // update on virtual update
+    });
+    provide('swiper', swiperRef); // update on virtual update
 
     watch(virtualData, () => {
       nextTick(() => {

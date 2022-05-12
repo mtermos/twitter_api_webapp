@@ -1,11 +1,12 @@
 import effectInit from '../../shared/effect-init.js';
 import effectTarget from '../../shared/effect-target.js';
 import effectVirtualTransitionEnd from '../../shared/effect-virtual-transition-end.js';
-export default function EffectFade({
-  swiper,
-  extendParams,
-  on
-}) {
+export default function EffectFade(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on
+  } = _ref;
   extendParams({
     fadeEffect: {
       crossFade: false,

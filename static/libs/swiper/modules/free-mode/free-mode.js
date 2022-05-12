@@ -1,10 +1,11 @@
 import { now } from '../../shared/utils.js';
-export default function freeMode({
-  swiper,
-  extendParams,
-  emit,
-  once
-}) {
+export default function freeMode(_ref) {
+  let {
+    swiper,
+    extendParams,
+    emit,
+    once
+  } = _ref;
   extendParams({
     freeMode: {
       enabled: false,
@@ -17,6 +18,16 @@ export default function freeMode({
       minimumVelocity: 0.02
     }
   });
+
+  function onTouchStart() {
+    const translate = swiper.getTranslate();
+    swiper.setTranslate(translate);
+    swiper.setTransition(0);
+    swiper.touchEventsData.velocities.length = 0;
+    swiper.freeMode.onTouchEnd({
+      currentPos: swiper.rtl ? swiper.translate : -swiper.translate
+    });
+  }
 
   function onTouchMove() {
     const {
@@ -37,9 +48,10 @@ export default function freeMode({
     });
   }
 
-  function onTouchEnd({
-    currentPos
-  }) {
+  function onTouchEnd(_ref2) {
+    let {
+      currentPos
+    } = _ref2;
     const {
       params,
       $wrapperEl,
@@ -238,6 +250,7 @@ export default function freeMode({
 
   Object.assign(swiper, {
     freeMode: {
+      onTouchStart,
       onTouchMove,
       onTouchEnd
     }

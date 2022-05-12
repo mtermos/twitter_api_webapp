@@ -3,9 +3,10 @@ import prependSlide from './methods/prependSlide.js';
 import addSlide from './methods/addSlide.js';
 import removeSlide from './methods/removeSlide.js';
 import removeAllSlides from './methods/removeAllSlides.js';
-export default function Manipulation({
-  swiper
-}) {
+export default function Manipulation(_ref) {
+  let {
+    swiper
+  } = _ref;
   Object.assign(swiper, {
     appendSlide: appendSlide.bind(swiper),
     prependSlide: prependSlide.bind(swiper),

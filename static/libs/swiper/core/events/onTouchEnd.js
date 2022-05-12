@@ -98,6 +98,17 @@ export default function onTouchEnd(event) {
       stopIndex = i;
       groupSize = slidesGrid[slidesGrid.length - 1] - slidesGrid[slidesGrid.length - 2];
     }
+  }
+
+  let rewindFirstIndex = null;
+  let rewindLastIndex = null;
+
+  if (params.rewind) {
+    if (swiper.isBeginning) {
+      rewindLastIndex = swiper.params.virtual && swiper.params.virtual.enabled && swiper.virtual ? swiper.virtual.slides.length - 1 : swiper.slides.length - 1;
+    } else if (swiper.isEnd) {
+      rewindFirstIndex = 0;
+    }
   } // Find current slide size
 
 
@@ -112,11 +123,17 @@ export default function onTouchEnd(event) {
     }
 
     if (swiper.swipeDirection === 'next') {
-      if (ratio >= params.longSwipesRatio) swiper.slideTo(stopIndex + increment);else swiper.slideTo(stopIndex);
+      if (ratio >= params.longSwipesRatio) swiper.slideTo(params.rewind && swiper.isEnd ? rewindFirstIndex : stopIndex + increment);else swiper.slideTo(stopIndex);
     }
 
     if (swiper.swipeDirection === 'prev') {
-      if (ratio > 1 - params.longSwipesRatio) swiper.slideTo(stopIndex + increment);else swiper.slideTo(stopIndex);
+      if (ratio > 1 - params.longSwipesRatio) {
+        swiper.slideTo(stopIndex + increment);
+      } else if (rewindLastIndex !== null && ratio < 0 && Math.abs(ratio) > params.longSwipesRatio) {
+        swiper.slideTo(rewindLastIndex);
+      } else {
+        swiper.slideTo(stopIndex);
+      }
     }
   } else {
     // Short swipes
@@ -129,11 +146,11 @@ export default function onTouchEnd(event) {
 
     if (!isNavButtonTarget) {
       if (swiper.swipeDirection === 'next') {
-        swiper.slideTo(stopIndex + increment);
+        swiper.slideTo(rewindFirstIndex !== null ? rewindFirstIndex : stopIndex + increment);
       }
 
       if (swiper.swipeDirection === 'prev') {
-        swiper.slideTo(stopIndex);
+        swiper.slideTo(rewindLastIndex !== null ? rewindLastIndex : stopIndex);
       }
     } else if (e.target === swiper.navigation.nextEl) {
       swiper.slideTo(stopIndex + increment);

@@ -1,5 +1,17 @@
 import { animateCSSModeScroll } from '../../shared/utils.js';
-export default function slideTo(index = 0, speed = this.params.speed, runCallbacks = true, internal, initial) {
+export default function slideTo(index, speed, runCallbacks, internal, initial) {
+  if (index === void 0) {
+    index = 0;
+  }
+
+  if (speed === void 0) {
+    speed = this.params.speed;
+  }
+
+  if (runCallbacks === void 0) {
+    runCallbacks = true;
+  }
+
   if (typeof index !== 'number' && typeof index !== 'string') {
     throw new Error(`The 'index' argument cannot have type other than 'number' or 'string'. [${typeof index}] given.`);
   }

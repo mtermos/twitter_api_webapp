@@ -2,7 +2,11 @@ import Swiper from 'swiper';
 import { isObject, extend } from './utils.js';
 import { paramsList } from './params-list.js';
 
-function getParams(obj = {}) {
+function getParams(obj) {
+  if (obj === void 0) {
+    obj = {};
+  }
+
   const params = {
     on: {}
   };

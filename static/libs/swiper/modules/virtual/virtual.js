@@ -1,10 +1,12 @@
 import $ from '../../shared/dom.js';
 import { setCSSProperty } from '../../shared/utils.js';
-export default function Virtual({
-  swiper,
-  extendParams,
-  on
-}) {
+export default function Virtual(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   extendParams({
     virtual: {
       enabled: false,
@@ -94,6 +96,8 @@ export default function Virtual({
       if (swiper.lazy && swiper.params.lazy.enabled) {
         swiper.lazy.load();
       }
+
+      emit('virtualUpdate');
     }
 
     if (previousFrom === from && previousTo === to && !force) {
@@ -102,6 +106,7 @@ export default function Virtual({
       }
 
       swiper.updateProgress();
+      emit('virtualUpdate');
       return;
     }
 
@@ -123,6 +128,8 @@ export default function Virtual({
 
       if (swiper.params.virtual.renderExternalUpdate) {
         onRendered();
+      } else {
+        emit('virtualUpdate');
       }
 
       return;

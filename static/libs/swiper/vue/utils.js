@@ -13,19 +13,35 @@ function extend(target, src) {
   });
 }
 
-function needsNavigation(props = {}) {
+function needsNavigation(props) {
+  if (props === void 0) {
+    props = {};
+  }
+
   return props.navigation && typeof props.navigation.nextEl === 'undefined' && typeof props.navigation.prevEl === 'undefined';
 }
 
-function needsPagination(props = {}) {
+function needsPagination(props) {
+  if (props === void 0) {
+    props = {};
+  }
+
   return props.pagination && typeof props.pagination.el === 'undefined';
 }
 
-function needsScrollbar(props = {}) {
+function needsScrollbar(props) {
+  if (props === void 0) {
+    props = {};
+  }
+
   return props.scrollbar && typeof props.scrollbar.el === 'undefined';
 }
 
-function uniqueClasses(classNames = '') {
+function uniqueClasses(classNames) {
+  if (classNames === void 0) {
+    classNames = '';
+  }
+
   const classes = classNames.split(' ').map(c => c.trim()).filter(c => !!c);
   const unique = [];
   classes.forEach(c => {

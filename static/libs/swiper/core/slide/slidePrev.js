@@ -1,5 +1,13 @@
 /* eslint no-unused-vars: "off" */
-export default function slidePrev(speed = this.params.speed, runCallbacks = true, internal) {
+export default function slidePrev(speed, runCallbacks, internal) {
+  if (speed === void 0) {
+    speed = this.params.speed;
+  }
+
+  if (runCallbacks === void 0) {
+    runCallbacks = true;
+  }
+
   const swiper = this;
   const {
     params,
@@ -56,7 +64,8 @@ export default function slidePrev(speed = this.params.speed, runCallbacks = true
   }
 
   if (params.rewind && swiper.isBeginning) {
-    return swiper.slideTo(swiper.slides.length - 1, speed, runCallbacks, internal);
+    const lastIndex = swiper.params.virtual && swiper.params.virtual.enabled && swiper.virtual ? swiper.virtual.slides.length - 1 : swiper.slides.length - 1;
+    return swiper.slideTo(lastIndex, speed, runCallbacks, internal);
   }
 
   return swiper.slideTo(prevIndex, speed, runCallbacks, internal);

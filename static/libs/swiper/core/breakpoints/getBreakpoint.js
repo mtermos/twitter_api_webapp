@@ -1,5 +1,9 @@
 import { getWindow } from 'ssr-window';
-export default function getBreakpoint(breakpoints, base = 'window', containerEl) {
+export default function getBreakpoint(breakpoints, base, containerEl) {
+  if (base === void 0) {
+    base = 'window';
+  }
+
   if (!breakpoints || base === 'container' && !containerEl) return undefined;
   let breakpoint = false;
   const window = getWindow();

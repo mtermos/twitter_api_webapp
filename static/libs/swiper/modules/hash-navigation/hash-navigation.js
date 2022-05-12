@@ -1,11 +1,12 @@
 import { getWindow, getDocument } from 'ssr-window';
 import $ from '../../shared/dom.js';
-export default function HashNavigation({
-  swiper,
-  extendParams,
-  emit,
-  on
-}) {
+export default function HashNavigation(_ref) {
+  let {
+    swiper,
+    extendParams,
+    emit,
+    on
+  } = _ref;
   let initialized = false;
   const document = getDocument();
   const window = getWindow();

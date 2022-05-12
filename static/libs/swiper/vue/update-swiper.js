@@ -1,15 +1,16 @@
 import { isObject, extend } from './utils.js';
 
-function updateSwiper({
-  swiper,
-  slides,
-  passedParams,
-  changedParams,
-  nextEl,
-  prevEl,
-  paginationEl,
-  scrollbarEl
-}) {
+function updateSwiper(_ref) {
+  let {
+    swiper,
+    slides,
+    passedParams,
+    changedParams,
+    nextEl,
+    prevEl,
+    paginationEl,
+    scrollbarEl
+  } = _ref;
   const updateParams = changedParams.filter(key => key !== 'children' && key !== 'direction');
   const {
     params: currentParams,

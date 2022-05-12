@@ -1,4 +1,4 @@
-import { h, ref, onMounted, onUpdated, onBeforeUpdate, computed, onBeforeUnmount } from 'vue';
+import { h, ref, onMounted, onUpdated, onBeforeUpdate, computed, onBeforeUnmount, provide } from 'vue';
 import { uniqueClasses } from './utils.js';
 const SwiperSlide = {
   name: 'SwiperSlide',
@@ -21,9 +21,10 @@ const SwiperSlide = {
     }
   },
 
-  setup(props, {
-    slots
-  }) {
+  setup(props, _ref) {
+    let {
+      slots
+    } = _ref;
     let eventAttached = false;
     const {
       swiperRef
@@ -67,6 +68,7 @@ const SwiperSlide = {
       isPrev: slideClasses.value.indexOf('swiper-slide-prev') >= 0 || slideClasses.value.indexOf('swiper-slide-duplicate-prev') >= 0,
       isNext: slideClasses.value.indexOf('swiper-slide-next') >= 0 || slideClasses.value.indexOf('swiper-slide-duplicate-next') >= 0
     }));
+    provide('swiperSlide', slideData);
     return () => {
       return h(props.tag, {
         class: uniqueClasses(`${slideClasses.value}`),

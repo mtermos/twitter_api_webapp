@@ -1,14 +1,19 @@
 import { getWindow } from 'ssr-window';
-export default function Observer({
-  swiper,
-  extendParams,
-  on,
-  emit
-}) {
+export default function Observer(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   const observers = [];
   const window = getWindow();
 
-  const attach = (target, options = {}) => {
+  const attach = function (target, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
     const ObserverFunc = window.MutationObserver || window.WebkitMutationObserver;
     const observer = new ObserverFunc(mutations => {
       // The observerUpdate event should only be triggered

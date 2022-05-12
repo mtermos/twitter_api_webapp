@@ -1,11 +1,12 @@
 import createShadow from '../../shared/create-shadow.js';
 import effectInit from '../../shared/effect-init.js';
 import effectTarget from '../../shared/effect-target.js';
-export default function EffectCoverflow({
-  swiper,
-  extendParams,
-  on
-}) {
+export default function EffectCoverflow(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on
+  } = _ref;
   extendParams({
     coverflowEffect: {
       rotate: 50,
@@ -36,7 +37,8 @@ export default function EffectCoverflow({
       const $slideEl = slides.eq(i);
       const slideSize = slidesSizesGrid[i];
       const slideOffset = $slideEl[0].swiperSlideOffset;
-      const offsetMultiplier = (center - slideOffset - slideSize / 2) / slideSize * params.modifier;
+      const centerOffset = (center - slideOffset - slideSize / 2) / slideSize;
+      const offsetMultiplier = typeof params.modifier === 'function' ? params.modifier(centerOffset) : centerOffset * params.modifier;
       let rotateY = isHorizontal ? rotate * offsetMultiplier : 0;
       let rotateX = isHorizontal ? 0 : rotate * offsetMultiplier; // var rotateZ = 0
 

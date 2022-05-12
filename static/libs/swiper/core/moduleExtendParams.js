@@ -1,6 +1,10 @@
 import { extend } from '../shared/utils.js';
 export default function moduleExtendParams(params, allModulesParams) {
-  return function extendParams(obj = {}) {
+  return function extendParams(obj) {
+    if (obj === void 0) {
+      obj = {};
+    }
+
     const moduleParamName = Object.keys(obj)[0];
     const moduleParams = obj[moduleParamName];
 

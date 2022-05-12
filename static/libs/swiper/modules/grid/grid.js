@@ -1,7 +1,8 @@
-export default function Grid({
-  swiper,
-  extendParams
-}) {
+export default function Grid(_ref) {
+  let {
+    swiper,
+    extendParams
+  } = _ref;
   extendParams({
     grid: {
       rows: 1,

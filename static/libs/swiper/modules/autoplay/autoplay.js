@@ -3,12 +3,13 @@
 /* eslint no-use-before-define: "off" */
 import { getDocument } from 'ssr-window';
 import { nextTick } from '../../shared/utils.js';
-export default function Autoplay({
-  swiper,
-  extendParams,
-  on,
-  emit
-}) {
+export default function Autoplay(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   let timeout;
   swiper.autoplay = {
     running: false,
@@ -143,6 +144,7 @@ export default function Autoplay({
     if (swiper.params.autoplay.disableOnInteraction) {
       stop();
     } else {
+      emit('autoplayPause');
       pause();
     }
 
@@ -157,6 +159,7 @@ export default function Autoplay({
     }
 
     swiper.autoplay.paused = false;
+    emit('autoplayResume');
     run();
   }
 

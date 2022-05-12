@@ -1,15 +1,16 @@
 import { isObject, extend } from './utils.js';
 
-function updateSwiper({
-  swiper,
-  slides,
-  passedParams,
-  changedParams,
-  nextEl,
-  prevEl,
-  scrollbarEl,
-  paginationEl
-}) {
+function updateSwiper(_ref) {
+  let {
+    swiper,
+    slides,
+    passedParams,
+    changedParams,
+    nextEl,
+    prevEl,
+    scrollbarEl,
+    paginationEl
+  } = _ref;
   const updateParams = changedParams.filter(key => key !== 'children' && key !== 'direction');
   const {
     params: currentParams,
@@ -75,6 +76,10 @@ function updateSwiper({
       }
     }
   });
+
+  if (updateParams.includes('controller') && !needControllerInit && swiper.controller && swiper.controller.control && currentParams.controller && currentParams.controller.control) {
+    swiper.controller.control = currentParams.controller.control;
+  }
 
   if (changedParams.includes('children') && virtual && currentParams.virtual.enabled) {
     virtual.slides = slides;

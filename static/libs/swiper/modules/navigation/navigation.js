@@ -1,11 +1,12 @@
 import createElementIfNotDefined from '../../shared/create-element-if-not-defined.js';
 import $ from '../../shared/dom.js';
-export default function Navigation({
-  swiper,
-  extendParams,
-  on,
-  emit
-}) {
+export default function Navigation(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   extendParams({
     navigation: {
       nextEl: null,

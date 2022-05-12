@@ -1,9 +1,10 @@
 import { getWindow } from 'ssr-window';
-export default function History({
-  swiper,
-  extendParams,
-  on
-}) {
+export default function History(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on
+  } = _ref;
   extendParams({
     history: {
       enabled: false,

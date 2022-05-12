@@ -1,9 +1,10 @@
-export default function effectVirtualTransitionEnd({
-  swiper,
-  duration,
-  transformEl,
-  allSlides
-}) {
+export default function effectVirtualTransitionEnd(_ref) {
+  let {
+    swiper,
+    duration,
+    transformEl,
+    allSlides
+  } = _ref;
   const {
     slides,
     activeIndex,

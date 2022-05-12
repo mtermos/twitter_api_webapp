@@ -2,12 +2,13 @@ import { getDocument } from 'ssr-window';
 import $ from '../../shared/dom.js';
 import { nextTick } from '../../shared/utils.js';
 import createElementIfNotDefined from '../../shared/create-element-if-not-defined.js';
-export default function Scrollbar({
-  swiper,
-  extendParams,
-  on,
-  emit
-}) {
+export default function Scrollbar(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   const document = getDocument();
   let isTouched = false;
   let timeout = null;

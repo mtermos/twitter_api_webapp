@@ -1,5 +1,21 @@
 import { animateCSSModeScroll } from '../../shared/utils.js';
-export default function translateTo(translate = 0, speed = this.params.speed, runCallbacks = true, translateBounds = true, internal) {
+export default function translateTo(translate, speed, runCallbacks, translateBounds, internal) {
+  if (translate === void 0) {
+    translate = 0;
+  }
+
+  if (speed === void 0) {
+    speed = this.params.speed;
+  }
+
+  if (runCallbacks === void 0) {
+    runCallbacks = true;
+  }
+
+  if (translateBounds === void 0) {
+    translateBounds = true;
+  }
+
   const swiper = this;
   const {
     params,

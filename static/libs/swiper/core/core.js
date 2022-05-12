@@ -38,9 +38,13 @@ const prototypes = {
 const extendedDefaults = {};
 
 class Swiper {
-  constructor(...args) {
+  constructor() {
     let el;
     let params;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
     if (args.length === 1 && args[0].constructor && Object.prototype.toString.call(args[0]).slice(8, -1) === 'Object') {
       params = args[0];
@@ -253,6 +257,7 @@ class Swiper {
 
   getSlideClasses(slideEl) {
     const swiper = this;
+    if (swiper.destroyed) return '';
     return slideEl.className.split(' ').filter(className => {
       return className.indexOf('swiper-slide') === 0 || className.indexOf(swiper.params.slideClass) === 0;
     }).join(' ');
@@ -273,7 +278,15 @@ class Swiper {
     swiper.emit('_slideClasses', updates);
   }
 
-  slidesPerViewDynamic(view = 'current', exact = false) {
+  slidesPerViewDynamic(view, exact) {
+    if (view === void 0) {
+      view = 'current';
+    }
+
+    if (exact === void 0) {
+      exact = false;
+    }
+
     const swiper = this;
     const {
       params,
@@ -381,7 +394,11 @@ class Swiper {
     swiper.emit('update');
   }
 
-  changeDirection(newDirection, needUpdate = true) {
+  changeDirection(newDirection, needUpdate) {
+    if (needUpdate === void 0) {
+      needUpdate = true;
+    }
+
     const swiper = this;
     const currentDirection = swiper.params.direction;
 
@@ -519,7 +536,15 @@ class Swiper {
     return swiper;
   }
 
-  destroy(deleteInstance = true, cleanStyles = true) {
+  destroy(deleteInstance, cleanStyles) {
+    if (deleteInstance === void 0) {
+      deleteInstance = true;
+    }
+
+    if (cleanStyles === void 0) {
+      cleanStyles = true;
+    }
+
     const swiper = this;
     const {
       params,

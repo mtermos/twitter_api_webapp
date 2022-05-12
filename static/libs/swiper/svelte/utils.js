@@ -13,19 +13,35 @@ function extend(target, src) {
   });
 }
 
-function needsNavigation(params = {}) {
+function needsNavigation(params) {
+  if (params === void 0) {
+    params = {};
+  }
+
   return params.navigation && typeof params.navigation.nextEl === 'undefined' && typeof params.navigation.prevEl === 'undefined';
 }
 
-function needsPagination(params = {}) {
+function needsPagination(params) {
+  if (params === void 0) {
+    params = {};
+  }
+
   return params.pagination && typeof params.pagination.el === 'undefined';
 }
 
-function needsScrollbar(params = {}) {
+function needsScrollbar(params) {
+  if (params === void 0) {
+    params = {};
+  }
+
   return params.scrollbar && typeof params.scrollbar.el === 'undefined';
 }
 
-function uniqueClasses(classNames = '') {
+function uniqueClasses(classNames) {
+  if (classNames === void 0) {
+    classNames = '';
+  }
+
   const classes = classNames.split(' ').map(c => c.trim()).filter(c => !!c);
   const unique = [];
   classes.forEach(c => {

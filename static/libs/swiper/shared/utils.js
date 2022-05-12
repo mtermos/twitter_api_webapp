@@ -15,7 +15,11 @@ function deleteProps(obj) {
   });
 }
 
-function nextTick(callback, delay = 0) {
+function nextTick(callback, delay) {
+  if (delay === void 0) {
+    delay = 0;
+  }
+
   return setTimeout(callback, delay);
 }
 
@@ -42,7 +46,11 @@ function getComputedStyle(el) {
   return style;
 }
 
-function getTranslate(el, axis = 'x') {
+function getTranslate(el, axis) {
+  if (axis === void 0) {
+    axis = 'x';
+  }
+
   const window = getWindow();
   let matrix;
   let curTransform;
@@ -94,12 +102,12 @@ function isNode(node) {
   return node && (node.nodeType === 1 || node.nodeType === 11);
 }
 
-function extend(...args) {
-  const to = Object(args[0]);
+function extend() {
+  const to = Object(arguments.length <= 0 ? undefined : arguments[0]);
   const noExtend = ['__proto__', 'constructor', 'prototype'];
 
-  for (let i = 1; i < args.length; i += 1) {
-    const nextSource = args[i];
+  for (let i = 1; i < arguments.length; i += 1) {
+    const nextSource = i < 0 || arguments.length <= i ? undefined : arguments[i];
 
     if (nextSource !== undefined && nextSource !== null && !isNode(nextSource)) {
       const keysArray = Object.keys(Object(nextSource)).filter(key => noExtend.indexOf(key) < 0);
@@ -138,11 +146,12 @@ function setCSSProperty(el, varName, varValue) {
   el.style.setProperty(varName, varValue);
 }
 
-function animateCSSModeScroll({
-  swiper,
-  targetPosition,
-  side
-}) {
+function animateCSSModeScroll(_ref) {
+  let {
+    swiper,
+    targetPosition,
+    side
+  } = _ref;
   const window = getWindow();
   const startPosition = -swiper.translate;
   let startTime = null;

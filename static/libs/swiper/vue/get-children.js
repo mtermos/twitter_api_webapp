@@ -1,4 +1,8 @@
-function getChildren(originalSlots = {}, slidesRef, oldSlidesRef) {
+function getChildren(originalSlots, slidesRef, oldSlidesRef) {
+  if (originalSlots === void 0) {
+    originalSlots = {};
+  }
+
   const slides = [];
   const slots = {
     'container-start': [],
@@ -27,6 +31,7 @@ function getChildren(originalSlots = {}, slidesRef, oldSlidesRef) {
   };
 
   Object.keys(originalSlots).forEach(slotName => {
+    if (typeof originalSlots[slotName] !== 'function') return;
     const els = originalSlots[slotName]();
     getSlidesFromElements(els, slotName);
   });

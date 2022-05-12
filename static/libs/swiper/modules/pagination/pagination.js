@@ -1,12 +1,13 @@
 import $ from '../../shared/dom.js';
 import classesToSelector from '../../shared/classes-to-selector.js';
 import createElementIfNotDefined from '../../shared/create-element-if-not-defined.js';
-export default function Pagination({
-  swiper,
-  extendParams,
-  on,
-  emit
-}) {
+export default function Pagination(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit
+  } = _ref;
   const pfx = 'swiper-pagination';
   extendParams({
     pagination: {
@@ -290,7 +291,7 @@ export default function Pagination({
     }
 
     $el.addClass(params.modifierClass + params.type);
-    $el.addClass(params.modifierClass + swiper.params.direction);
+    $el.addClass(swiper.isHorizontal() ? params.horizontalClass : params.verticalClass);
 
     if (params.type === 'bullets' && params.dynamicBullets) {
       $el.addClass(`${params.modifierClass}${params.type}-dynamic`);
@@ -330,7 +331,7 @@ export default function Pagination({
     const $el = swiper.pagination.$el;
     $el.removeClass(params.hiddenClass);
     $el.removeClass(params.modifierClass + params.type);
-    $el.removeClass(params.modifierClass + swiper.params.direction);
+    $el.removeClass(swiper.isHorizontal() ? params.horizontalClass : params.verticalClass);
     if (swiper.pagination.bullets && swiper.pagination.bullets.removeClass) swiper.pagination.bullets.removeClass(params.bulletActiveClass);
 
     if (params.clickable) {
